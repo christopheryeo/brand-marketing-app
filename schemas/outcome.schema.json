@@ -1,0 +1,23 @@
+{
+  "type": "object",
+  "required": [
+    "outcomeType",
+    "description",
+    "sourceRef"
+  ],
+  "properties": {
+    "outcomeType": {
+      "enum": [
+        "action",
+        "commitment",
+        "business-decision"
+      ]
+    },
+    "description": {
+      "type": "string"
+    },
+    "sourceRef": {
+      "type": "object"
+    }
+  }
+}

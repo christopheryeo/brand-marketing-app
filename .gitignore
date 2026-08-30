@@ -1,0 +1,25 @@
+.DS_Store
+.env
+.env.*
+!.env.example
+node_modules/
+.pytest_cache/
+**/__pycache__/
+*.pyc
+build/
+dist/
+Inputs/**
+raw/**
+index/**
+runs/**
+tmp/**
+# Entity content — keep only system files (schema/how-to + audit log).
+# catalog.md (id→name tables), the entity notes, and decision ADRs are content
+# and must NOT reach the remote.
+entities/*/*.md
+!entities/*/index.md
+!entities/*/log.md
+
+# Built wiki apps embed the entire dataset (names + emails) — keep them out of the
+# repo. The generators in scripts/ rebuild them locally into Apps/.
+Apps/*.html

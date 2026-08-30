@@ -1,0 +1,50 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": ["results"],
+  "additionalProperties": false,
+  "properties": {
+    "results": {
+      "type": "array",
+      "maxItems": 50,
+      "items": {
+        "type": "object",
+        "required": ["sourceLocator", "candidates", "outcomes"],
+        "additionalProperties": false,
+        "properties": {
+          "sourceLocator": {"type": "string", "maxLength": 500},
+          "candidates": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "required": ["entityType", "name", "evidenceText", "confidence"],
+              "additionalProperties": false,
+              "properties": {
+                "entityType": {"enum": ["marketing-campaign", "product-service", "project-initiative", "sales-opportunity", "topic"]},
+                "name": {"type": "string", "maxLength": 200},
+                "evidenceText": {"type": "string", "maxLength": 400},
+                "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+              }
+            }
+          },
+          "outcomes": {
+            "type": "array",
+            "maxItems": 3,
+            "items": {
+              "type": "object",
+              "required": ["outcomeType", "description", "evidenceText", "confidence"],
+              "additionalProperties": false,
+              "properties": {
+                "outcomeType": {"enum": ["action", "commitment", "business-decision"]},
+                "description": {"type": "string", "maxLength": 400},
+                "evidenceText": {"type": "string", "maxLength": 400},
+                "confidence": {"type": "number", "minimum": 0, "maximum": 1}
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

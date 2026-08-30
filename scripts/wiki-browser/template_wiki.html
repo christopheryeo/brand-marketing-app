@@ -1,0 +1,477 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Influential Brands — Knowledge Wiki</title>
+<style>
+  :root{
+    --bg:#eef1f6; --panel:#ffffff; --panel2:#f7f9fc; --border:#e2e7f0; --text:#141a24; --muted:#697386;
+    --accent:#1a56db; --accent-rgb:26,86,219; --accent-soft:#e8effc; --row-hover:#f3f6fc; --row-active:#e8effc;
+    --chip:#f1f4f9; --shadow:0 1px 3px rgba(20,26,36,.06),0 8px 24px rgba(20,26,36,.05);
+    --glass:rgba(255,255,255,.62); --glass-2:rgba(255,255,255,.34); --glass-border:rgba(255,255,255,.7);
+    --glow1:rgba(123,63,242,.14); --glow2:rgba(26,86,219,.13);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0f141b; --panel:#161d27; --panel2:#12181f; --border:#26303d; --text:#e7ecf3; --muted:#93a0b2;
+      --accent:#5b8cff; --accent-rgb:91,140,255; --accent-soft:#1b2a44; --row-hover:#1b2430; --row-active:#22314a;
+      --chip:#1d2632; --shadow:0 1px 3px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3);
+      --glass:rgba(26,34,46,.58); --glass-2:rgba(18,24,32,.42); --glass-border:rgba(255,255,255,.09);
+      --glow1:rgba(123,63,242,.20); --glow2:rgba(91,140,255,.18);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    color:var(--text);font-size:14px;line-height:1.5;
+    background:
+      radial-gradient(1100px 620px at -5% -5%, var(--glow1), transparent 60%),
+      radial-gradient(1000px 560px at 105% 108%, var(--glow2), transparent 58%),
+      var(--bg);}
+  .app{display:flex;flex-direction:column;height:100vh}
+  header{display:flex;align-items:center;gap:12px;padding:13px 20px;flex-shrink:0;
+    background:linear-gradient(180deg,var(--glass),var(--glass-2));
+    -webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);
+    border-bottom:1px solid var(--glass-border)}
+  header .logo{width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#7b3ff2);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px}
+  header h1{font-size:15px;margin:0;font-weight:650;letter-spacing:-.01em}
+  header .sub{font-size:12px;color:var(--muted)}
+  header .spacer{flex:1}
+  .navbtn{width:30px;height:30px;border-radius:8px;border:1px solid var(--border);background:var(--panel);
+    color:var(--text);cursor:pointer;font-size:15px;display:flex;align-items:center;justify-content:center}
+  .navbtn:hover:not(:disabled){background:var(--row-hover)}
+  .navbtn:disabled{opacity:.35;cursor:default}
+  .body{display:flex;flex:1;min-height:0}
+  /* Sidebar — frosted glass */
+  .sidebar{width:206px;flex-shrink:0;overflow-y:auto;padding:10px 9px;
+    background:linear-gradient(180deg,var(--glass),var(--glass-2));
+    -webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);
+    border-right:1px solid var(--glass-border)}
+  .side-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
+    font-weight:700;padding:8px 12px 8px}
+  .tnav{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:10px;cursor:pointer;
+    user-select:none;border:1px solid transparent;margin-bottom:2px;transition:background .14s,border-color .14s,transform .06s}
+  .tnav:hover{background:rgba(var(--accent-rgb),.08)}
+  .tnav:active{transform:scale(.985)}
+  .tnav.active{background:linear-gradient(90deg,rgba(var(--accent-rgb),.20),rgba(var(--accent-rgb),.07));
+    border-color:rgba(var(--accent-rgb),.38);color:var(--accent);font-weight:650;
+    box-shadow:0 3px 12px rgba(var(--accent-rgb),.16)}
+  .tnav .ic{width:20px;text-align:center;font-size:16px;line-height:1;flex-shrink:0}
+  .tnav .lb{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-size:12.5px}
+  .tnav .ct{font-size:11px;color:var(--muted);background:rgba(var(--accent-rgb),.09);padding:1px 8px;border-radius:20px;font-weight:600}
+  .tnav.active .ct{color:var(--accent);background:rgba(var(--accent-rgb),.16)}
+  /* List */
+  .list-col{width:340px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--panel)}
+  .search{padding:11px 13px;border-bottom:1px solid var(--border);position:relative}
+  .search input{width:100%;padding:9px 12px 9px 33px;border:1px solid var(--border);border-radius:9px;
+    background:var(--bg);color:var(--text);font:inherit;outline:none}
+  .search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .search svg{position:absolute;left:25px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted)}
+  .list{overflow-y:auto;flex:1}
+  .item{display:flex;align-items:center;gap:10px;padding:8px 15px;cursor:pointer;border-bottom:1px solid var(--border)}
+  .item:hover{background:var(--row-hover)}
+  .item.active{background:var(--row-active)}
+  .item.active .nm{color:var(--accent)}
+  .avatar{width:30px;height:30px;border-radius:8px;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    font-size:13px;font-weight:650;color:#fff;background:#8896ab}
+  .avatar.round{border-radius:50%}
+  .item .txt{min-width:0;flex:1}
+  .item .nm{font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .item .sc{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .nomatch{padding:40px 20px;text-align:center;color:var(--muted)}
+  /* Detail */
+  .detail-col{flex:1;overflow-y:auto;padding:28px 36px}
+  .empty-detail{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);text-align:center;gap:8px}
+  .empty-detail .big{font-size:40px;opacity:.5}
+  .card{max-width:760px;margin:0 auto}
+  .card-head{display:flex;align-items:center;gap:15px;margin-bottom:22px}
+  .card-head .avatar{width:56px;height:56px;font-size:20px;border-radius:12px}
+  .card-head .avatar.round{border-radius:50%}
+  .kicker{font-size:11.5px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted);font-weight:600}
+  .card-head h2{margin:2px 0 0;font-size:22px;font-weight:680;letter-spacing:-.02em;line-height:1.2}
+  .card-head .role{color:var(--muted);margin-top:2px;font-size:13px}
+  .section-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:650;margin:24px 0 11px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);
+    border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+  .field{background:var(--panel);padding:12px 15px}
+  .field .k{font-size:11.5px;color:var(--muted);margin-bottom:2px}
+  .field .v{font-weight:550;word-break:break-word}
+  .field .v a{color:var(--accent);text-decoration:none}
+  .field .v a:hover{text-decoration:underline}
+  .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:600;background:var(--chip);color:var(--muted)}
+  .badge.active{background:#dcfce7;color:#166534}
+  @media (prefers-color-scheme:dark){.badge.active{background:#0f2e1c;color:#4ade80}}
+  .rel-group{margin-bottom:16px}
+  .rel-head{font-size:12.5px;font-weight:600;color:var(--muted);margin-bottom:7px;display:flex;align-items:center;gap:7px}
+  .rel-head .cnt{font-size:11px;background:var(--chip);padding:1px 8px;border-radius:20px}
+  .chips{display:flex;flex-wrap:wrap;gap:7px}
+  .link-chip{display:inline-flex;align-items:center;gap:7px;padding:6px 11px;border-radius:9px;background:var(--panel);
+    border:1px solid var(--border);color:var(--text);text-decoration:none;font-weight:500;font-size:13px;cursor:pointer;max-width:340px}
+  .link-chip:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .link-chip .ci{flex-shrink:0}
+  .link-chip .cn{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .contact-chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:4px}
+  a.contact{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:9px;background:var(--accent);
+    color:#fff;text-decoration:none;font-weight:550;font-size:13px}
+  a.contact.ghost{background:var(--chip);color:var(--text)}
+  a.contact:hover{opacity:.9}
+  .morebtn{font-size:12px;color:var(--accent);cursor:pointer;background:none;border:none;padding:4px 2px;font-weight:600}
+  .tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:4px}
+  .tag{padding:2px 9px;border-radius:6px;background:var(--chip);font-size:12px;color:var(--muted)}
+  /* Ask / chat */
+  .tnav.ask{background:linear-gradient(90deg,rgba(123,63,242,.18),rgba(var(--accent-rgb),.09));
+    border:1px solid rgba(var(--accent-rgb),.32);font-weight:650;margin-bottom:10px}
+  .tnav.ask.active{box-shadow:0 3px 14px rgba(var(--accent-rgb),.22)}
+  .detail-col.ask-mode{padding:0;display:flex}
+  .ask-wrap{display:flex;flex-direction:column;height:100%;width:100%;max-width:880px;margin:0 auto}
+  .ask-top{padding:18px 26px 8px}
+  .ask-top h2{margin:0;font-size:18px;font-weight:680}
+  .ask-top p{margin:4px 0 0;color:var(--muted);font-size:13px}
+  .chat{flex:1;overflow-y:auto;padding:14px 26px;display:flex;flex-direction:column;gap:13px}
+  .msg{max-width:90%;font-size:14px;line-height:1.55}
+  .msg.user{align-self:flex-end;background:var(--accent);color:#fff;padding:9px 14px;border-radius:15px 15px 4px 15px}
+  .msg.bot{align-self:flex-start;background:var(--panel);border:1px solid var(--border);padding:13px 17px;
+    border-radius:15px 15px 15px 4px;box-shadow:var(--shadow);width:100%}
+  .msg.bot p{margin:8px 0}.msg.bot p:first-child{margin-top:0}.msg.bot b{font-weight:650}
+  .suggests{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
+  .suggest{font-size:12.5px;padding:7px 12px;border:1px solid var(--border);border-radius:20px;background:var(--panel);cursor:pointer;color:var(--text)}
+  .suggest:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
+  .ans-sec{margin:12px 0 4px}
+  .ans-h{font-size:11px;font-weight:700;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px}
+  .ans-line{display:flex;align-items:center;gap:8px;margin:5px 0;flex-wrap:wrap}
+  .ans-role{color:var(--muted);font-size:13px}
+  .ans-date{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12px;color:var(--muted);min-width:84px}
+  .ans-more{color:var(--muted);font-size:12px;align-self:center}
+  .ans-note{margin-top:11px;font-size:13px;color:var(--muted);background:var(--chip);padding:10px 13px;border-radius:10px}
+  .ask-input{display:flex;gap:9px;padding:13px 26px 18px;border-top:1px solid var(--border);
+    background:linear-gradient(180deg,transparent,var(--panel2))}
+  .ask-input input{flex:1;padding:11px 15px;border:1px solid var(--border);border-radius:12px;background:var(--bg);color:var(--text);font:inherit;outline:none}
+  .ask-input input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .ask-input button{padding:0 20px;border-radius:12px;border:none;background:var(--accent);color:#fff;font-weight:650;cursor:pointer}
+  .ask-input button:hover{opacity:.92}
+  @media (max-width:820px){.sidebar{width:200px}.list-col{width:250px}.detail-col{padding:20px}.grid{grid-template-columns:1fr}}
+  @media (max-width:560px){.tnav .ct{display:none}}
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">IB</div>
+    <div>
+      <h1>Influential Brands — Knowledge Wiki</h1>
+      <div class="sub" id="subhead">Relationship, campaign & communications vault</div>
+    </div>
+    <div class="spacer"></div>
+    <button class="navbtn" id="backBtn" title="Back">‹</button>
+    <button class="navbtn" id="fwdBtn" title="Forward">›</button>
+  </header>
+  <div class="body">
+    <nav class="sidebar" id="sidebar"></nav>
+    <div class="list-col">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="search" placeholder="Search…" autocomplete="off" />
+      </div>
+      <div class="list" id="list"></div>
+    </div>
+    <div class="detail-col">
+      <div id="detail">
+        <div class="empty-detail"><div class="big">📚</div><div>Select an entity to view its record</div></div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const DATA = /*__DATA__*/;
+const NODES = DATA.nodes;
+const TYPES = DATA.types;
+const TYPE_META = {}; TYPES.forEach(t=>TYPE_META[t.key]=t);
+
+// Reverse index: targetId -> [[rel, sourceId], ...]
+const INBOUND = {};
+for(const id in NODES){
+  for(const [rel,tid] of NODES[id].l){
+    (INBOUND[tid] = INBOUND[tid] || []).push([rel, id]);
+  }
+}
+
+const el = id=>document.getElementById(id);
+const listEl=el('list'), detailEl=el('detail'), qEl=el('q'), sidebarEl=el('sidebar');
+const PALETTE=['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981','#06b6d4','#ef4444','#6366f1','#14b8a6','#f97316'];
+function colorFor(s){let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return PALETTE[h%PALETTE.length];}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function initials(name){const p=String(name).replace(/[^A-Za-z0-9 ]/g,' ').trim().split(/\s+/).filter(Boolean);
+  return p.length?(p[0][0]+(p.length>1?p[p.length-1][0]:'')).toUpperCase():'?';}
+function icon(t){return (TYPE_META[t]&&TYPE_META[t].icon)||'•';}
+function isPerson(t){return t==='people';}
+function fmtVal(k,v){
+  if(typeof v==='boolean')return v?'Yes':'No';
+  if(k==='confidence'&&typeof v==='number')return (v*100).toFixed(0)+'%';
+  if(typeof v==='string'&&/^\d{4}-\d{2}-\d{2}(T|$)/.test(v)){const d=new Date(v);if(!isNaN(d))return d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});}
+  if(typeof v==='string'&&/^https?:\/\//.test(v))return `<a href="${esc(v)}" target="_blank" rel="noopener">${esc(v.replace(/^https?:\/\/(www\.)?/,''))}</a>`;
+  if(typeof v==='string'&&/^[^@\s]+@[^@\s]+\.[^@\s]+$/.test(v))return `<a href="mailto:${esc(v)}">${esc(v)}</a>`;
+  return esc(v);
+}
+const FIELD_LABELS={primaryEmail:'Email',linkedInUrl:'LinkedIn',mentionCount:'Mentions',displayName:'Name',
+  createdAt:'Created',updatedAt:'Updated',startDate:'Start',endDate:'End',sentAt:'Sent',receivedAt:'Received',
+  locationType:'Location type',memberCount:'Members',reuseCount:'Reuse count',fileSize:'File size',
+  mimeType:'MIME type',sourceType:'Source type',eventType:'Event type',originalFilename:'File',
+  securityClassification:'Classification',importedAt:'Imported',threadTopic:'Thread'};
+function labelFor(k){return FIELD_LABELS[k]||(k[0].toUpperCase()+k.slice(1).replace(/([A-Z])/g,' $1'));}
+
+let curType=null, curId=null, histBack=[], histFwd=[], mode='browse';
+const convo=[];
+
+function renderSidebar(){
+  sidebarEl.innerHTML='';
+  const ask=document.createElement('div');
+  ask.className='tnav ask'+(mode==='ask'?' active':'');
+  ask.title='Ask the wiki a natural-language question';
+  ask.innerHTML='<span class="ic">💬</span><span class="lb">Ask the Wiki</span>';
+  ask.onclick=()=>enterAsk();
+  sidebarEl.appendChild(ask);
+  const lbl=document.createElement('div'); lbl.className='side-label'; lbl.textContent='Entities';
+  sidebarEl.appendChild(lbl);
+  for(const t of TYPES){
+    const row=document.createElement('div');
+    row.className='tnav'+(mode!=='ask'&&t.key===curType?' active':'');
+    row.title=(t.tip?t.tip+' · ':'')+t.count+' record'+(t.count===1?'':'s');
+    row.innerHTML=`<span class="ic">${t.icon}</span><span class="lb">${esc(t.label)}</span><span class="ct">${t.count}</span>`;
+    row.onclick=()=>{selectType(t.key);};
+    sidebarEl.appendChild(row);
+  }
+}
+
+function nodesOfType(t){
+  const arr=[];
+  for(const id in NODES){if(NODES[id].t===t)arr.push([id,NODES[id]]);}
+  arr.sort((a,b)=>(a[1].n||'￿').toLowerCase().localeCompare((b[1].n||'￿').toLowerCase()));
+  return arr;
+}
+
+function subtitleFor(id,n){
+  // best-effort subtitle: first outbound org/company or key field
+  if(n.f.primaryEmail)return n.f.primaryEmail;
+  const org=n.l.find(([r])=>r==='Organisation');
+  if(org&&NODES[org[1]])return NODES[org[1]].n;
+  if(n.f.name&&n.f.name!==n.n)return n.f.name;
+  const dt=n.f.sentAt||n.f.startDate||n.f.updatedAt;
+  return dt?String(dt).slice(0,10):'';
+}
+
+function renderList(){
+  const q=qEl.value.trim().toLowerCase();
+  const terms=q?q.split(/\s+/):null;
+  let items=nodesOfType(curType);
+  if(terms){
+    items=items.filter(([id,n])=>{
+      const hay=(n.n+' '+Object.values(n.f).join(' ')+' '+(n.al||[]).join(' ')).toLowerCase();
+      return terms.every(t=>hay.includes(t));
+    });
+  }
+  const tm=TYPE_META[curType];
+  qEl.placeholder='Search '+(tm?tm.label.toLowerCase():'')+'…';
+  if(!items.length){listEl.innerHTML='<div class="nomatch">No matches</div>';return;}
+  const frag=document.createDocumentFragment();
+  const cap=Math.min(items.length,3000);
+  for(let i=0;i<cap;i++){
+    const [id,n]=items[i];
+    const row=document.createElement('div');
+    row.className='item'+(id===curId?' active':'');
+    row.dataset.id=id;
+    const sub=subtitleFor(id,n);
+    row.innerHTML=`<div class="avatar${isPerson(n.t)?' round':''}" style="background:${colorFor(n.n)}">${isPerson(n.t)?esc(initials(n.n)):icon(n.t)}</div>`+
+      `<div class="txt"><div class="nm">${esc(n.n)}</div><div class="sc">${esc(sub)}</div></div>`;
+    row.onclick=()=>openEntity(id);
+    frag.appendChild(row);
+  }
+  listEl.innerHTML='';listEl.appendChild(frag);
+  if(items.length>cap){const d=document.createElement('div');d.className='nomatch';d.textContent=`+${items.length-cap} more — refine your search`;listEl.appendChild(d);}
+}
+
+function selectType(t,keepDetail){
+  exitAsk();
+  curType=t;
+  qEl.value='';
+  renderSidebar();
+  renderList();
+  if(!keepDetail){/* leave detail as-is */}
+}
+
+function linkChip(id){
+  const n=NODES[id];if(!n)return '';
+  return `<span class="link-chip" data-go="${esc(id)}"><span class="ci">${isPerson(n.t)?'👤':icon(n.t)}</span><span class="cn">${esc(n.n)}</span></span>`;
+}
+
+function relGroup(title,ids,startOpen){
+  if(!ids.length)return '';
+  const gid='g'+Math.random().toString(36).slice(2,8);
+  const cap=startOpen?ids.length:Math.min(ids.length,24);
+  const chips=ids.slice(0,cap).map(linkChip).join('');
+  const more=ids.length>cap?`<button class="morebtn" data-more="${gid}">+${ids.length-cap} more</button>`:'';
+  return `<div class="rel-group"><div class="rel-head">${esc(title)}<span class="cnt">${ids.length}</span></div>`+
+    `<div class="chips" id="${gid}" data-all='${esc(JSON.stringify(ids))}'>${chips}</div>${more}</div>`;
+}
+
+function renderDetail(id){
+  const n=NODES[id];if(!n)return;
+  const tm=TYPE_META[n.t];
+  // contact chips
+  const contacts=[];
+  if(n.f.primaryEmail)contacts.push(`<a class="contact" href="mailto:${esc(n.f.primaryEmail)}">✉︎ ${esc(n.f.primaryEmail)}</a>`);
+  if(n.f.linkedInUrl)contacts.push(`<a class="contact ghost" href="${esc(n.f.linkedInUrl)}" target="_blank" rel="noopener">in · LinkedIn</a>`);
+
+  // fields grid
+  const skip=new Set(['linkedInUrl','primaryEmail','displayName','name','title','subject','query']);
+  const fentries=Object.entries(n.f).filter(([k])=>!skip.has(k));
+  let fgrid='';
+  if(fentries.length){
+    fgrid='<div class="section-label">Details</div><div class="grid">'+
+      fentries.map(([k,v])=>{
+        const val=(k==='status')?`<span class="badge ${esc(v)}">${esc(v)}</span>`:fmtVal(k,v);
+        return `<div class="field"><div class="k">${esc(labelFor(k))}</div><div class="v">${val}</div></div>`;
+      }).join('')+'</div>';
+  }
+
+  // outbound relationships grouped by rel label
+  const outByRel={};
+  for(const [rel,tid] of n.l){(outByRel[rel]=outByRel[rel]||[]).push(tid);}
+  let outHtml='';
+  const relOrder=Object.keys(outByRel).sort();
+  for(const rel of relOrder){outHtml+=relGroup(rel,outByRel[rel]);}
+
+  // inbound grouped by source type
+  const inbound=INBOUND[id]||[];
+  const inByType={};
+  for(const [rel,sid] of inbound){const st=NODES[sid]?NODES[sid].t:'?';(inByType[st]=inByType[st]||[]).push(sid);}
+  let inHtml='';
+  const inOrder=Object.keys(inByType).sort((a,b)=>inByType[b].length-inByType[a].length);
+  for(const st of inOrder){
+    const lbl=(TYPE_META[st]?TYPE_META[st].icon+' '+TYPE_META[st].label:st);
+    inHtml+=relGroup(lbl,inByType[st]);
+  }
+
+  const aliases=(n.al&&n.al.length)?`<div class="rel-group"><div class="rel-head">Aliases</div><div class="tagrow">${n.al.map(a=>`<span class="tag">${esc(a)}</span>`).join('')}</div></div>`:'';
+  const tags=(n.tg&&n.tg.length)?`<div class="rel-group"><div class="rel-head">Tags</div><div class="tagrow">${n.tg.map(a=>`<span class="tag">${esc(a)}</span>`).join('')}</div></div>`:'';
+
+  detailEl.innerHTML=
+    `<div class="card">
+      <div class="card-head">
+        <div class="avatar${isPerson(n.t)?' round':''}" style="background:${colorFor(n.n)}">${isPerson(n.t)?esc(initials(n.n)):icon(n.t)}</div>
+        <div><div class="kicker">${esc(tm?tm.label:n.t)}</div><h2>${esc(n.n)}</h2></div>
+      </div>
+      ${contacts.length?`<div class="contact-chips">${contacts.join('')}</div>`:''}
+      ${fgrid}
+      ${outHtml?'<div class="section-label">Relationships</div>'+outHtml:''}
+      ${inHtml?'<div class="section-label">Referenced by</div>'+inHtml:''}
+      ${aliases}${tags}
+    </div>`;
+
+  detailEl.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>openEntity(c.dataset.go));
+  detailEl.querySelectorAll('[data-more]').forEach(b=>b.onclick=()=>{
+    const box=el(b.dataset.more);const all=JSON.parse(box.dataset.all);
+    box.innerHTML=all.map(linkChip).join('');
+    box.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>openEntity(c.dataset.go));
+    b.remove();
+  });
+  detailEl.parentElement.scrollTop=0;
+}
+
+function highlightList(id){
+  document.querySelectorAll('.item').forEach(x=>x.classList.toggle('active',x.dataset.id===id));
+  const row=[...document.querySelectorAll('.item')].find(x=>x.dataset.id===id);
+  if(row)row.scrollIntoView({block:'nearest'});
+}
+
+function openEntity(id,opts){
+  opts=opts||{};
+  const n=NODES[id];if(!n)return;
+  const wasAsk=(mode==='ask');
+  if(wasAsk)exitAsk();
+  if(curId&&!opts.noHist){histBack.push({type:curType,id:curId});histFwd=[];}
+  curId=id;
+  if(wasAsk||curType!==n.t){curType=n.t;qEl.value='';renderSidebar();renderList();}
+  highlightList(id);
+  renderDetail(id);
+  updateNav();
+}
+
+// ── Ask the Wiki (AI chat via local server) ──────────────────
+function enterAsk(){
+  mode='ask'; curId=null;
+  document.querySelector('.list-col').style.display='none';
+  detailEl.parentElement.classList.add('ask-mode');
+  renderSidebar();
+  renderChat();
+}
+function exitAsk(){
+  if(mode!=='ask')return;
+  mode='browse';
+  document.querySelector('.list-col').style.display='';
+  detailEl.parentElement.classList.remove('ask-mode');
+  renderSidebar();
+}
+const SUGGESTIONS=['What have we done with Panasonic?','Who do we know at Visa?','Tell me about the Coca-Cola Company','Which people work at Lazada?'];
+function renderChat(){
+  detailEl.innerHTML=`<div class="ask-wrap">
+    <div class="ask-top"><h2>💬 Ask the Wiki</h2><p>AI answers grounded strictly in this vault's ${Object.keys(NODES).length.toLocaleString()} records. Every answer links back into the wiki.</p></div>
+    <div class="chat" id="chat"></div>
+    <div class="ask-input"><input id="askq" placeholder="Ask about a company, person or brand…" autocomplete="off"/><button id="asksend">Ask</button></div>
+  </div>`;
+  const chat=el('chat');
+  if(!convo.length){
+    chat.innerHTML=`<div class="suggests">${SUGGESTIONS.map(s=>`<span class="suggest" data-s="${esc(s)}">${esc(s)}</span>`).join('')}</div>`;
+  }else{
+    chat.innerHTML=convo.map(m=>m.role==='user'?`<div class="msg user">${esc(m.text)}</div>`:`<div class="msg bot">${m.html}</div>`).join('');
+  }
+  const input=el('askq'), send=el('asksend');
+  send.onclick=()=>submitAsk(input.value);
+  input.addEventListener('keydown',e=>{if(e.key==='Enter')submitAsk(input.value);});
+  detailEl.querySelectorAll('[data-s]').forEach(s=>s.onclick=()=>submitAsk(s.dataset.s));
+  detailEl.querySelectorAll('[data-go]').forEach(c=>c.onclick=()=>openEntity(c.dataset.go));
+  input.focus();
+  chat.scrollTop=chat.scrollHeight;
+}
+async function submitAsk(text){
+  text=(text||'').trim(); if(!text)return;
+  convo.push({role:'user',text});
+  convo.push({role:'bot',html:'<span class="ans-note">Thinking…</span>'});
+  renderChat();
+  try{
+    const res=await fetch('/ask',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({question:text})});
+    if(!res.ok) throw new Error('HTTP '+res.status);
+    const data=await res.json();
+    convo.pop();
+    convo.push({role:'bot',html:formatAnswer(data)});
+  }catch(err){
+    convo.pop();
+    convo.push({role:'bot',html:`<span class="ans-note">The AI chat needs the local Ask server running. Launch <b>"Ask the Wiki.command"</b> in the influential-brands folder, then reload this page.<br><small>(${esc(err.message)})</small></span>`});
+  }
+  renderChat();
+}
+function formatAnswer(data){
+  const ans=esc(data.answer||'(no answer)');
+  let h=`<p>${ans.replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>')}</p>`;
+  if(data.sources&&data.sources.length){
+    const chips=data.sources.filter(s=>NODES[s.id]).map(s=>linkChip(s.id)).join('');
+    if(chips) h+=`<div class="ans-sec"><div class="ans-h">Sources (${data.sources.filter(s=>NODES[s.id]).length})</div><div class="chips">${chips}</div></div>`;
+  }
+  return h;
+}
+function updateNav(){el('backBtn').disabled=!histBack.length;el('fwdBtn').disabled=!histFwd.length;}
+el('backBtn').onclick=()=>{if(!histBack.length)return;histFwd.push({type:curType,id:curId});const s=histBack.pop();goto(s);};
+el('fwdBtn').onclick=()=>{if(!histFwd.length)return;histBack.push({type:curType,id:curId});const s=histFwd.pop();goto(s);};
+function goto(s){curId=s.id;if(curType!==s.type){curType=s.type;qEl.value='';renderSidebar();renderList();}highlightList(s.id);renderDetail(s.id);updateNav();}
+
+qEl.addEventListener('input',()=>{renderList();});
+
+// init
+curType=TYPES[0].key;
+renderSidebar();
+renderList();
+updateNav();
+</script>
+</body>
+</html>

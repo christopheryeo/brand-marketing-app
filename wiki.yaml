@@ -1,0 +1,23 @@
+name: influential-brands
+description: Influential Brands relationship, campaign and communications knowledge vault
+entities:
+  - person
+  - organisation
+  - brand
+  - location
+  - industry
+  - appointment
+  - organisational-function
+  - marketing-segment
+  - marketing-campaign
+  - email-message
+  - product-service
+  - project-initiative
+  - sales-opportunity
+  - meeting-event
+  - topic
+  - source
+operational_domains:
+  - search
+  - decisions
+

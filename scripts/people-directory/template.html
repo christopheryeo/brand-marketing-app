@@ -1,0 +1,216 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Influential Brands — People Directory</title>
+<style>
+  :root{
+    --bg:#eef1f6; --panel:#ffffff; --border:#e2e7f0; --text:#141a24; --muted:#697386;
+    --accent:#1a56db; --accent-soft:#e8effc; --row-hover:#f3f6fc; --row-active:#e8effc;
+    --chip:#f1f4f9; --shadow:0 1px 3px rgba(20,26,36,.06),0 8px 24px rgba(20,26,36,.05);
+  }
+  @media (prefers-color-scheme:dark){
+    :root{
+      --bg:#0f141b; --panel:#161d27; --border:#26303d; --text:#e7ecf3; --muted:#93a0b2;
+      --accent:#5b8cff; --accent-soft:#1b2a44; --row-hover:#1b2430; --row-active:#22314a;
+      --chip:#1d2632; --shadow:0 1px 3px rgba(0,0,0,.3),0 8px 24px rgba(0,0,0,.3);
+    }
+  }
+  *{box-sizing:border-box}
+  html,body{height:100%}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);color:var(--text);font-size:14px;line-height:1.5}
+  .app{display:flex;flex-direction:column;height:100vh}
+  header{display:flex;align-items:center;gap:14px;padding:16px 24px;background:var(--panel);
+    border-bottom:1px solid var(--border);flex-shrink:0}
+  header .logo{width:34px;height:34px;border-radius:9px;background:linear-gradient(135deg,var(--accent),#7b3ff2);
+    display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:16px}
+  header h1{font-size:16px;margin:0;font-weight:650;letter-spacing:-.01em}
+  header .sub{font-size:12.5px;color:var(--muted);margin-top:1px}
+  header .spacer{flex:1}
+  header .count{font-size:12.5px;color:var(--muted);background:var(--chip);padding:5px 11px;border-radius:20px;font-weight:550}
+  .body{display:flex;flex:1;min-height:0}
+  /* List column */
+  .list-col{width:360px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--panel)}
+  .search{padding:12px 14px;border-bottom:1px solid var(--border);position:relative}
+  .search input{width:100%;padding:9px 12px 9px 34px;border:1px solid var(--border);border-radius:9px;
+    background:var(--bg);color:var(--text);font:inherit;outline:none}
+  .search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
+  .search svg{position:absolute;left:26px;top:50%;transform:translateY(-50%);width:15px;height:15px;color:var(--muted)}
+  .list{overflow-y:auto;flex:1}
+  .item{display:flex;align-items:center;gap:11px;padding:9px 16px;cursor:pointer;border-bottom:1px solid var(--border)}
+  .item:hover{background:var(--row-hover)}
+  .item.active{background:var(--row-active)}
+  .item.active .nm{color:var(--accent)}
+  .avatar{width:32px;height:32px;border-radius:50%;flex-shrink:0;display:flex;align-items:center;justify-content:center;
+    font-size:12px;font-weight:650;color:#fff;background:#8896ab}
+  .item .txt{min-width:0;flex:1}
+  .item .nm{font-weight:550;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .item .sc{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .nomatch{padding:40px 20px;text-align:center;color:var(--muted)}
+  /* Detail column */
+  .detail-col{flex:1;overflow-y:auto;padding:32px 40px}
+  .empty-detail{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);text-align:center;gap:8px}
+  .empty-detail .big{font-size:40px;opacity:.5}
+  .card{max-width:720px;margin:0 auto}
+  .card-head{display:flex;align-items:center;gap:16px;margin-bottom:24px}
+  .card-head .avatar{width:60px;height:60px;font-size:22px}
+  .card-head h2{margin:0;font-size:23px;font-weight:680;letter-spacing:-.02em}
+  .card-head .role{color:var(--muted);margin-top:3px}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:26px}
+  .chip{display:inline-flex;align-items:center;gap:6px;padding:7px 13px;border-radius:9px;background:var(--chip);
+    color:var(--text);text-decoration:none;font-weight:550;font-size:13px;border:1px solid transparent}
+  a.chip:hover{border-color:var(--accent);color:var(--accent)}
+  .chip.primary{background:var(--accent);color:#fff}
+  a.chip.primary:hover{color:#fff;opacity:.92}
+  .section-label{font-size:11px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);font-weight:650;margin:0 0 12px}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:var(--border);border:1px solid var(--border);
+    border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+  .field{background:var(--panel);padding:14px 16px}
+  .field .k{font-size:12px;color:var(--muted);margin-bottom:3px}
+  .field .v{font-weight:550;word-break:break-word}
+  .field .v.mono{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;font-weight:500}
+  .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:600}
+  .badge.active{background:#dcfce7;color:#166534}
+  @media (prefers-color-scheme:dark){.badge.active{background:#0f2e1c;color:#4ade80}}
+  .tagrow{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .tag{padding:2px 9px;border-radius:6px;background:var(--chip);font-size:12px;color:var(--muted)}
+  .footer-note{margin-top:22px;font-size:12px;color:var(--muted);font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
+  @media (max-width:820px){
+    .list-col{width:300px}.detail-col{padding:22px}.grid{grid-template-columns:1fr}
+  }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="logo">IB</div>
+    <div>
+      <h1>Influential Brands — People Directory</h1>
+      <div class="sub">Knowledge Wiki · People entities</div>
+    </div>
+    <div class="spacer"></div>
+    <div class="count"><span id="countN">__COUNT__</span> people</div>
+  </header>
+  <div class="body">
+    <div class="list-col">
+      <div class="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+        <input id="q" type="search" placeholder="Search name, email, organisation…" autocomplete="off" />
+      </div>
+      <div class="list" id="list"></div>
+    </div>
+    <div class="detail-col">
+      <div id="detail">
+        <div class="empty-detail">
+          <div class="big">👤</div>
+          <div>Select a person to view their record</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script>
+const PEOPLE = /*__DATA__*/;
+const listEl = document.getElementById('list');
+const detailEl = document.getElementById('detail');
+const qEl = document.getElementById('q');
+const countEl = document.getElementById('countN');
+
+function initials(name){
+  const parts = String(name).replace(/[^A-Za-z0-9 ]/g,' ').trim().split(/\s+/).filter(Boolean);
+  if(!parts.length) return '?';
+  return (parts[0][0] + (parts.length>1?parts[parts.length-1][0]:'')).toUpperCase();
+}
+const PALETTE = ['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981','#06b6d4','#ef4444','#6366f1','#14b8a6','#f97316'];
+function colorFor(s){let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return PALETTE[h%PALETTE.length];}
+function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
+function fmtDate(iso){if(!iso)return '—';const d=new Date(iso);return isNaN(d)?iso:d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});}
+
+let activeId = null;
+
+function renderList(items){
+  countEl.textContent = items.length;
+  if(!items.length){ listEl.innerHTML='<div class="nomatch">No matches</div>'; return; }
+  const frag = document.createDocumentFragment();
+  for(const p of items){
+    const row = document.createElement('div');
+    row.className = 'item' + (p.id===activeId?' active':'');
+    row.dataset.id = p.id;
+    const sub = p.org || p.email || '';
+    row.innerHTML =
+      `<div class="avatar" style="background:${colorFor(p.name)}">${esc(initials(p.name))}</div>`+
+      `<div class="txt"><div class="nm">${esc(p.name)}</div><div class="sc">${esc(sub)}</div></div>`;
+    row.onclick = ()=>selectPerson(p.id);
+    frag.appendChild(row);
+  }
+  listEl.innerHTML='';
+  listEl.appendChild(frag);
+}
+
+function field(k,v,opts){
+  opts=opts||{};
+  const cls = opts.mono?' mono':'';
+  return `<div class="field"><div class="k">${esc(k)}</div><div class="v${cls}">${v}</div></div>`;
+}
+
+function selectPerson(id){
+  activeId = id;
+  const p = PEOPLE.find(x=>x.id===id);
+  document.querySelectorAll('.item').forEach(el=>el.classList.toggle('active', el.dataset.id===id));
+  if(!p){return;}
+  const chips=[];
+  if(p.email) chips.push(`<a class="chip primary" href="mailto:${esc(p.email)}">✉︎ ${esc(p.email)}</a>`);
+  if(p.linkedin) chips.push(`<a class="chip" href="${esc(p.linkedin)}" target="_blank" rel="noopener">in · LinkedIn</a>`);
+
+  const fields=[];
+  fields.push(field('Organisation', esc(p.org||'—')));
+  fields.push(field('Country', esc(p.country||'—')));
+  if(p.industry) fields.push(field('Industry', esc(p.industry)));
+  fields.push(field('Mentions', esc(p.mentions==null?'—':p.mentions)));
+  fields.push(field('Status', p.status?`<span class="badge ${esc(p.status)}">${esc(p.status)}</span>`:'—'));
+  fields.push(field('Confidence', p.confidence==null?'—':esc((p.confidence*100).toFixed(0))+'%'));
+  fields.push(field('To Enhance', p.ToEnhance==null?'—':(p.ToEnhance?'Yes':'No')));
+  fields.push(field('Clay Enhanced', esc(fmtDate(p.clayEnhanced))));
+  fields.push(field('Created', esc(fmtDate(p.created))));
+  fields.push(field('Updated', esc(fmtDate(p.updated))));
+
+  let extra='';
+  if((p.aliases&&p.aliases.length)||(p.tags&&p.tags.length)){
+    const a = p.aliases&&p.aliases.length?`<div class="field"><div class="k">Aliases</div><div class="tagrow">${p.aliases.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div></div>`:'';
+    const t = p.tags&&p.tags.length?`<div class="field"><div class="k">Tags</div><div class="tagrow">${p.tags.map(t=>`<span class="tag">${esc(t)}</span>`).join('')}</div></div>`:'';
+    extra = `<div class="grid" style="margin-top:16px">${a}${t}</div>`;
+  }
+
+  detailEl.innerHTML =
+    `<div class="card">
+      <div class="card-head">
+        <div class="avatar" style="background:${colorFor(p.name)}">${esc(initials(p.name))}</div>
+        <div><h2>${esc(p.name)}</h2><div class="role">${esc(p.org||'')}${p.country?' · '+esc(p.country):''}</div></div>
+      </div>
+      ${chips.length?`<div class="chips">${chips.join('')}</div>`:''}
+      <div class="section-label">Record</div>
+      <div class="grid">${fields.join('')}</div>
+      ${extra}
+      <div class="footer-note">${esc(p.sourceLocator||'')} ${p.sourceLocator?'·':''} ${esc(p.file)}</div>
+    </div>`;
+  detailEl.parentElement.scrollTop=0;
+}
+
+function applyFilter(){
+  const q = qEl.value.trim().toLowerCase();
+  if(!q){ renderList(PEOPLE); return; }
+  const terms = q.split(/\s+/);
+  const filtered = PEOPLE.filter(p=>{
+    const hay = (p.name+' '+(p.email||'')+' '+(p.org||'')+' '+(p.country||'')).toLowerCase();
+    return terms.every(t=>hay.includes(t));
+  });
+  renderList(filtered);
+}
+
+qEl.addEventListener('input', applyFilter);
+renderList(PEOPLE);
+</script>
+</body>
+</html>

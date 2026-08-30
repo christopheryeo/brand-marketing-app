@@ -1,0 +1,66 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "entityType",
+    "createdAt",
+    "updatedAt",
+    "aliases",
+    "tags",
+    "confidence",
+    "sourceRefs",
+    "meetingEventId",
+    "title"
+  ],
+  "properties": {
+    "entityType": {
+      "const": "meeting-event"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "sourceId",
+          "locator",
+          "method",
+          "evidenceHash"
+        ]
+      }
+    },
+    "meetingEventId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "title": {
+      "type": [
+        "string",
+        "null"
+      ]
+    }
+  },
+  "title": "meeting-event"
+}

@@ -1,0 +1,230 @@
+{
+  "main": {
+    "id": "5fcf5c766c54a83f",
+    "type": "split",
+    "children": [
+      {
+        "id": "e20b67c4276cc254",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "25a24eee3f319008",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "entities/organisations/organisation-10-design-13ff95b238.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "organisation-10-design-13ff95b238"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "eabe17a77173d1e6",
+    "type": "split",
+    "children": [
+      {
+        "id": "d62dd3197f52c314",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "368a1ecac7fbba6a",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "8c2325fed9624e22",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "98e81ba277192ef3",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300
+  },
+  "right": {
+    "id": "13a9f732d3d8d8d9",
+    "type": "split",
+    "children": [
+      {
+        "id": "972172efb2765f77",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "a96be4c0f81643a4",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "entities/organisations/organisation-10-design-13ff95b238.md",
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "58d9b1b190ba6f77",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "entities/organisations/organisation-10-design-13ff95b238.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "a97880f26f92861f",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "d14a8cecf871beb4",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "479419e6b8fac089",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "entities/organisations/organisation-10-design-13ff95b238.md",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 300,
+    "collapsed": true
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "368a1ecac7fbba6a",
+  "lastOpenFiles": [
+    "Apps/README.md",
+    "runs/20260828T2215-post-fix-validation/validate-receipt.json",
+    "runs/20260828T2215-post-fix-validation/validate-result.json",
+    "runs/20260828T2215-post-fix-validation",
+    "runs/20260828T2214-person-fields-sync/mysql-sync-receipt.json",
+    "runs/20260828T2214-person-fields-sync",
+    "runs/20260828T221218-mysql-sync/mysql-sync-receipt.json",
+    "runs/20260828T221218-mysql-sync",
+    "scripts/__pycache__/backfill_to_enhance.cpython-314.pyc",
+    "tests/__pycache__/test_backfill_to_enhance.cpython-314.pyc",
+    "scripts/__pycache__/backfill_clay_enhanced.cpython-314.pyc",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zynarang-google-com-2ca12c0867.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zuzana-arvin-airasia-com-1b01f51313.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zumadiana-kushaili-shell-com-a310f2559b.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zulaikha-ntuclearninghub-com-6693b8ab96.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zoe-lin-charleskeith-com-2c717877ca.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-ziqian-yakun-com-94a4f1b6d9.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-ziq-uber-com-2feeb5e195.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zhong-zhen-tong-fairpricegroup-sg-0e0e390bd1.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zhicong-influentialbrands-com-80f244534f.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zhengyang-halifa-bobo-com-dac28f88e8.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zfaiq-biogance-fr-ee2547425c.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zenas-kok-mamee-com-my-8412f22597.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zblocal-sph-com-sg-db1aa9d47b.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zbcj-sph-com-sg-5bef76be9b.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zaw-win-htet-neo4j-com-914196cddc.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zan-onyafood-com-b23c775008.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zalizam-olgrin-sg-ea594a9279.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zakirh-sph-com-sg-ace72a9cdd.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zainiffamohd-hnhoyle-com-sg-0dc7ec7edb.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-zach-spectaclehut-com-sg-66ce2732c1.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-yvonneyen-stoneforestit-com-7f62b713ad.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-yvonnequah-spritzer-com-my-edfe4e7653.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-yvonnekua-starbucks-com-my-8a6f3a05c4.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-yvonne-zou-go-jek-com-1c748bacbf.md",
+    "tmp/clay-enhanced-backup-20260828T214923-clay-enhanced-nullable/person-yvonne-teo-fairprice-com-sg-24ebb5e597.md"
+  ]
+}

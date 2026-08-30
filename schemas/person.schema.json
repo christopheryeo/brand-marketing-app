@@ -1,0 +1,83 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "required": [
+    "entityType",
+    "createdAt",
+    "updatedAt",
+    "aliases",
+    "tags",
+    "confidence",
+    "sourceRefs",
+    "personId",
+    "displayName",
+    "clayEnhanced",
+    "ToEnhance"
+  ],
+  "properties": {
+    "entityType": {
+      "const": "person"
+    },
+    "createdAt": {
+      "type": "string"
+    },
+    "updatedAt": {
+      "type": "string"
+    },
+    "aliases": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "tags": {
+      "type": "array",
+      "items": {
+        "type": "string"
+      }
+    },
+    "confidence": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "sourceRefs": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "required": [
+          "sourceId",
+          "locator",
+          "method",
+          "evidenceHash"
+        ]
+      }
+    },
+    "personId": {
+      "type": "string",
+      "minLength": 1
+    },
+    "displayName": {
+      "type": [
+        "string",
+        "null"
+      ]
+    },
+    "clayEnhanced": {
+      "type": [
+        "string",
+        "null"
+      ],
+      "format": "date",
+      "description": "Date of the latest successful Clay enhancement in YYYY-MM-DD format, or null when no verified enhancement is recorded."
+    },
+    "ToEnhance": {
+      "type": [
+        "boolean",
+        "null"
+      ],
+      "description": "True when this Person record's notes require enhancement, false when assessed and clear, and null when not yet assessed."
+    }
+  },
+  "title": "person"
+}
