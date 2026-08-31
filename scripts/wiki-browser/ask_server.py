@@ -285,6 +285,13 @@ class Handler(BaseHTTPRequestHandler):
                     self._send(200, f.read(), "text/html; charset=utf-8")
             except FileNotFoundError:
                 self._send(404, "wiki-browser.html not found — run build_wiki.py first.", "text/plain")
+        elif self.path == "/wiki-data.js":
+            data_path = os.path.join(os.path.dirname(HTML_PATH), "wiki-data.js")
+            try:
+                with open(data_path, "rb") as f:
+                    self._send(200, f.read(), "application/javascript; charset=utf-8")
+            except FileNotFoundError:
+                self._send(404, "wiki-data.js not found — run build_wiki.py first.", "text/plain")
         else:
             self._send(404, "Not found", "text/plain")
     def do_POST(self):

@@ -176,14 +176,20 @@ payload = {"types": types_meta, "nodes": nodes}
 data_json = json.dumps(payload, ensure_ascii=False, separators=(",", ":"))
 
 TEMPLATE = open(os.path.join(HERE, "template_wiki.html"), encoding="utf-8").read()
-out = TEMPLATE.replace("/*__DATA__*/", data_json)
 os.makedirs(os.path.dirname(OUT), exist_ok=True)
+# App shell — HTML + code only, NO vault data. Safe to commit / version-control.
 with open(OUT, "w", encoding="utf-8") as f:
-    f.write(out)
+    f.write(TEMPLATE)
+# Data payload — names, emails, relationships. Must sit beside the HTML and stay
+# out of git (see .gitignore: Apps/wiki-data.js).
+DATA_OUT = os.path.join(os.path.dirname(OUT), "wiki-data.js")
+with open(DATA_OUT, "w", encoding="utf-8") as f:
+    f.write("window.DATA=" + data_json + ";\n")
 
 total_links = sum(len(v["l"]) for v in nodes.values())
-print(f"Wrote {OUT}")
+print(f"Wrote {OUT}  (app shell, no data)")
+print(f"Wrote {DATA_OUT}  (data payload — gitignored)")
 print(f"Nodes: {len(nodes)}  across {len(types_meta)} types  |  Links: {total_links}")
-print(f"Size: {os.path.getsize(OUT)/1024/1024:.2f} MB")
+print(f"Shell size: {os.path.getsize(OUT)/1024:.1f} KB  |  Data size: {os.path.getsize(DATA_OUT)/1024/1024:.2f} MB")
 for t in types_meta:
     print(f"  {t['icon']} {t['label']:<22} {t['count']}")

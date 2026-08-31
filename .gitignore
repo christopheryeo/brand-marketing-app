@@ -20,6 +20,9 @@ entities/*/*.md
 !entities/*/index.md
 !entities/*/log.md
 
-# Built wiki apps embed the entire dataset (names + emails) — keep them out of the
-# repo. The generators in scripts/ rebuild them locally into Apps/.
-Apps/*.html
+# Data payloads embed the entire dataset (names + emails) — never commit.
+# The wiki-browser app shell (Apps/wiki-browser.html) holds NO data and is tracked;
+# its data lives in Apps/wiki-data.js, which stays local. people-directory.html
+# still embeds data inline, so it stays ignored too. scripts/ rebuilds all of these.
+Apps/wiki-data.js
+Apps/people-directory.html
