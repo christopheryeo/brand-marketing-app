@@ -155,6 +155,14 @@ for nid, (tk, fm, idf) in records.items():
         if isinstance(v, (str, int, float, bool)) and v not in (None, ""):
             fields[k] = v
 
+    # People: always surface the enhancement fields, even when null, so the
+    # person screen shows them (parity with the People Directory). Null renders
+    # as "—" in the UI.
+    if tk == "people":
+        for kf in ("clayEnhanced", "ToEnhance"):
+            if kf in fm:
+                fields[kf] = fm.get(kf)
+
     # de-dup links
     seen = set(); ul = []
     for rel, tid in links:
