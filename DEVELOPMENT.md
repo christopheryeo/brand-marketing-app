@@ -41,4 +41,4 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
-- (none)
+- 2026-09-01 SGT — maintenance — Claude Code — audited committed HTML (`Apps/wiki-browser.html` and tracked `scripts/**/*.html` templates) for private data such as emails and company names; none found (data stays in gitignored `wiki-data.js` / `people-directory.html`)
