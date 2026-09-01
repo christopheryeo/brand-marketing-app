@@ -29,8 +29,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 ## Now
 
-- Claude Code — People Directory only, branch `feature/people-directory-to-enhance-checkbox`: land [PR #2](https://github.com/christopheryeo/brand-marketing-app/pull/2) so To Enhance is an editable checkbox that saves through `scripts/mark_to_enhance.py`. This line owns that script. Do not retouch the Wiki Browser person screen. Do not write a second vault saver.
-- Claude Code — Wiki Browser person screen only, branch `feature/wiki-browser-editable-to-enhance`: land [PR #3](https://github.com/christopheryeo/brand-marketing-app/pull/3) so To Enhance is an editable checkbox that saves through the existing `scripts/mark_to_enhance.py`. Reuse that script; do not rewrite it. Do not retouch the People Directory.
+- (none)
 
 ## Next
 
