@@ -6,9 +6,9 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 **Grok Bot (Felix).** Updates Now and Next. Writes each Now line as a short prompt the named tool can follow. After a merged PR, writes a Features line only for a user-facing capability he can name. Does not copy every PR. Does not implement the front-end or the vault.
 
-**Claude Code.** Implements the Now prompt named for Claude Code. Appends Done with implement or maintenance. Commits that work to a branch and opens or updates a PR. Does not invent features. Does not keep Now and Next. Does not write Product Inventory. Does not use the wiki tag.
+**Claude Code.** Implements the Now prompt named for Claude Code. Appends Done with implement or maintenance. Commits that work to a branch and opens or updates a PR. In that same PR, deletes only the Now line it just finished. Must not add Now or Next. Does not invent features. Does not write Product Inventory. Does not use the wiki tag.
 
-**ChatGPT Codex.** Works the Influential Brands vault. Implements the Now prompt named for ChatGPT Codex. Appends Done with the wiki tag only. Commits only tracked files for that Now line, on a branch, and opens or updates a PR. Does not keep Now and Next. Does not write Product Inventory. ChatGPT the chat product is not this role and cannot git.
+**ChatGPT Codex.** Works the Influential Brands vault. Implements the Now prompt named for ChatGPT Codex. Appends Done with the wiki tag only. Commits only tracked files for that Now line, on a branch, and opens or updates a PR. In that same PR, deletes only the Now line it just finished. Must not add Now or Next. Does not write Product Inventory. ChatGPT the chat product is not this role and cannot git.
 
 **Morgan.** Does not keep this log.
 
@@ -26,6 +26,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 8. Done is one dated handoff list. Each line is tagged implement, wiki, or maintenance, then who, then what. Tags sit on the line. ChatGPT Codex uses wiki only. Claude Code uses implement or maintenance only. Do not make separate headings. Do not add a Feature tag. Done gets a line only when the named tool actually opened this file.
 9. `CLAUDE.md` imports `AGENTS.md` first, then this file.
 10. The tool named on a Now line commits that work to a branch and opens or updates a PR. Nobody pushes to `main`. Nobody commits gitignored files (`entities/*` person notes, `Apps/wiki-data.js`, `Apps/people-directory.html`). ChatGPT Codex on a wiki line commits only tracked files (`scripts/`, `index.md`, `log.md`). Claude Code does the same for implement lines.
+11. The named tool may delete only the Now line it just finished, in the same PR as Done. It must not add Now or Next. Felix still writes Now and Next.
 
 ## Now (prompt for the named tool)
 
