@@ -2,7 +2,7 @@
 
 ## Mandatory startup
 
-Read `README.md` before operating in this Wiki. Read the relevant domain's `entities/<domain>/index.md` before creating or updating an entity.
+Read `README.md` before operating in this Wiki. Read `DEVELOPMENT.md` for Now, Next, and Done. Do not log Done in this file. Read the relevant domain's `entities/<domain>/index.md` before creating or updating an entity.
 
 ## Operating rules
 
