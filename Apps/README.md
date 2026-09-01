@@ -14,12 +14,21 @@ into each HTML file, so you just double-click to open.
 | `wiki-browser.html` | **The main app.** A unified browser across all 18 entity types (~11.3k nodes, ~23.5k cross-links). Three panes: entity-type sidebar · searchable list · detail view. Clickable forward relationships, a "Referenced by" reverse-link section, and back/forward navigation. Also hosts the **Ask the Wiki** AI chat tab. |
 | `people-directory.html` | A lighter, people-only view — searchable list of every person with a detail card (role, organisation, industry, location, contact, and Clay-enhancement date). |
 | `Ask the Wiki.command` | Double-click launcher for the AI chat. Starts the local server and opens the wiki in your browser. |
+| `People Directory.command` | Double-click launcher for the **editable** People Directory. Starts a local server and opens the directory in your browser, where the **To Enhance** checkbox saves back to each person's record. |
 
 ## How to use
 
 ### Browse (no setup)
 Double-click **`wiki-browser.html`** (or `people-directory.html`). Everything works
 offline — search, click through relationships, navigate back and forth.
+
+### Flag people for enhancement (editable To Enhance)
+Double-click **`People Directory.command`**. This starts a local server and opens the
+People Directory in your browser. Each person's record shows a **To Enhance** checkbox:
+tick it to flag that person for enhancement (`ToEnhance=true`), untick to clear it
+(`false`). Changes save straight to the person's vault record (with an audit line in
+`entities/people/log.md`). The checkbox only saves through this launcher — opening
+`people-directory.html` directly (file double-click) shows it read-only.
 
 ### Ask the Wiki (AI chat)
 Double-click **`Ask the Wiki.command`**. This launches a small local server that reads
