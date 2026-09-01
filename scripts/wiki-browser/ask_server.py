@@ -11,14 +11,21 @@ Local "Ask the Wiki" server for the Influential Brands knowledge vault.
 Run:  python3 ask_server.py       (or double-click "Ask the Wiki.command")
 Stdlib only — no pip installs.
 """
-import os, re, json, threading, webbrowser, urllib.request, urllib.error
+import os, re, sys, json, threading, webbrowser, urllib.request, urllib.error
+from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
-VAULT = os.path.abspath(os.path.join(SCRIPT_DIR, "..", ".."))   # influential-brands/
+SCRIPTS_DIR = os.path.dirname(SCRIPT_DIR)                        # .../scripts
+VAULT = os.path.abspath(os.environ.get("IB_VAULT_ROOT") or os.path.join(SCRIPT_DIR, "..", ".."))  # influential-brands/
 ENT = os.path.join(VAULT, "entities")
 HTML_PATH = os.path.join(VAULT, "Apps", "wiki-browser.html")
-PORT = 8765
+DATA_PATH = os.path.join(VAULT, "Apps", "wiki-data.js")
+PORT = int(os.environ.get("IB_WIKI_PORT", "8765"))
+
+# ToEnhance writer — lets the person-screen checkbox persist to the vault
+sys.path.insert(0, SCRIPTS_DIR)
+from mark_to_enhance import read_to_enhance, set_to_enhance  # noqa: E402
 MODEL = "gpt-4o-mini"
 GROUNDING = "strict"   # "strict" = vault-only; "open" = vault + general knowledge
 
@@ -292,9 +299,28 @@ class Handler(BaseHTTPRequestHandler):
                     self._send(200, f.read(), "application/javascript; charset=utf-8")
             except FileNotFoundError:
                 self._send(404, "wiki-data.js not found — run build_wiki.py first.", "text/plain")
+        elif self.path.startswith("/to-enhance-state"):
+            from urllib.parse import urlparse, parse_qs
+            pid = (parse_qs(urlparse(self.path).query).get("id") or [""])[0]
+            try:
+                self._send(200, json.dumps({"status": "ok", "id": pid, "value": read_to_enhance(pid, root=Path(VAULT))}))
+            except Exception as e:
+                self._send(404, json.dumps({"status": "failed", "error": f"{type(e).__name__}: {e}"}))
         else:
             self._send(404, "Not found", "text/plain")
     def do_POST(self):
+        if self.path == "/set-to-enhance":
+            try:
+                n = int(self.headers.get("Content-Length", 0))
+                payload = json.loads(self.rfile.read(n) or b"{}")
+                value = payload.get("value")
+                if value not in (True, False, None):
+                    raise ValueError("value must be true, false or null")
+                result = set_to_enhance(payload.get("id"), value, root=Path(VAULT))
+                self._send(200, json.dumps({"status": "ok", **result}))
+            except Exception as e:
+                self._send(400, json.dumps({"status": "failed", "error": f"{type(e).__name__}: {e}"}))
+            return
         if self.path != "/ask":
             self._send(404, "Not found", "text/plain"); return
         try:
