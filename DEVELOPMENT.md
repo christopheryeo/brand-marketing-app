@@ -32,7 +32,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- (none)
+- ChatGPT Codex — vault people: for every Person with `ToEnhance` true, enhance that record through the Clay plugin. Write into gitignored person notes only. After a verified Clay success, record it with `scripts/mark_clay_enhanced.py`. Do not rewrite that script. Do not commit `entities/people/*.md` person notes, `Apps/wiki-data.js`, or `Apps/people-directory.html`. You may append tracked `entities/people/log.md`. Do not push to `main`. Do not retouch HTML.
 
 ## Next
 
