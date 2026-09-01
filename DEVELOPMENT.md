@@ -31,7 +31,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- Claude Code — maintenance: check committed HTML only (`Apps/wiki-browser.html` and the tracked `scripts/**/*.html` templates) for private data such as emails and company names. Do not scan gitignored data files (`Apps/wiki-data.js`, `Apps/people-directory.html`) or person notes. If anything is found, strip it on a branch and open a PR. Do not push to `main`.
+- (none)
 
 ## Next
 
