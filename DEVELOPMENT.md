@@ -32,8 +32,6 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- ChatGPT Codex — vault batch: for every Person with `ToEnhance` true, run the provider-neutral enrichment path (`scripts/record_enrichment.py`). Clay for verified contacts when available; LinkedIn as fallback for professional history. Write gitignored person notes only; you may append tracked `entities/people/log.md`. Do not commit person notes, `wiki-data.js`, or `people-directory.html`. Do not push to `main`. Do not retouch HTML. Finish in one PR with work, clear this Now line, and one wiki Done line (Policy 11).
-
 ## Next
 
 - Claude Code — front end polish: close the People Directory provider+date gap by updating `scripts/people-directory/build_people_directory.py` so it passes `enrichmentProvider` and `enrichmentDate` into the directory, then adjust templates/empty states so both surfaces match. Do not commit gitignored `Apps/people-directory.html` or person notes. Do not push to `main`. Finish in one PR with work, clear Now, and Done (Policy 11).
@@ -42,6 +40,7 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
+- 2026-09-02 SGT — wiki — ChatGPT Codex — completed the `ToEnhance` Person batch: Clay found no verified contact match for the sole queued record, so the LinkedIn fallback recorded the verified profile, current role, and professional history; the queue is now clear
 - 2026-09-02 SGT — implement — Claude Code — People Directory and Wiki Browser show enrichment provider-neutrally ("Enriched: date · provider", reading `enrichmentProvider`/`enrichmentDate` with `clayEnhanced` fallback) instead of Clay-only framing; `ToEnhance` kept as the editable queue flag
 - 2026-09-02 SGT — wiki — ChatGPT Codex — added provider-neutral person enrichment writeback (scripts/record_enrichment.py; Clay mark path updated); Now was cleared in a separate PR, so this line records the missing Done.
 - 2026-09-01 SGT — maintenance — Claude Code — audited committed HTML (`Apps/wiki-browser.html` and tracked `scripts/**/*.html` templates) for private data such as emails and company names; none found (data stays in gitignored `wiki-data.js` / `people-directory.html`)
