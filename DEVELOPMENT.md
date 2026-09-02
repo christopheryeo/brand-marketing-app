@@ -17,7 +17,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 ## Policies
 
 1. Features come from Now, or from a merged PR Felix has logged. Do not invent.
-2. Now is a short prompt for one named tool, not a title. Next is queued and not started. Every Now and Next line names one tool: Claude Code or ChatGPT Codex. One Now line is one tool and one branch. The prompt names the surface, files it may touch, files it must not touch, the git rules, and a link to the PR or issue for detail. Do not dump a novel. Claude Code already loads this file through `CLAUDE.md`. Claude Code implements only Now prompts named for it. ChatGPT Codex implements only Now prompts named for it. Felix moves a line from Next to Now when implementation starts.
+2. Now is a short prompt for one named tool, not a title. Next is queued and not started. Every Now and Next line names one tool: Claude Code or ChatGPT Codex. One Now line is one tool and one branch. The prompt names the surface, files it may touch, files it must not touch, the git rules, and a link to the PR for detail when one exists. Do not open or link GitHub Issues. Queued work stays in Next. Do not dump a novel. Claude Code already loads this file through `CLAUDE.md`. Claude Code implements only Now prompts named for it. ChatGPT Codex implements only Now prompts named for it. Felix moves a line from Next to Now when implementation starts.
 3. If a line is waiting on a human, it does not belong here.
 4. Do not copy wiki operating rules into this file. `AGENTS.md` stays the vault constitution, not a log.
 5. Native GitHub only. Merged PRs on `christopheryeo/brand-marketing-app` wake Felix.
@@ -36,7 +36,10 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 ## Next
 
-- (none)
+- ChatGPT Codex — vault: make people enrichment provider-neutral. Clay for verified contacts when available; LinkedIn as fallback for professional history. Record provider and date. Clear `ToEnhance` only when the minimum useful profile is present. Extend or replace Clay-only mark scripts as needed. Write gitignored person notes only; you may append tracked `entities/people/log.md`. Do not commit person notes, `wiki-data.js`, or `people-directory.html`. Do not push to `main`. Do not retouch HTML.
+- Claude Code — front end: People Directory and Wiki Browser show enrichment as a capability with provider and date, not Clay-only framing. Keep `ToEnhance` as the editable queue flag. Touch committed HTML and templates only. Do not scan or commit gitignored data files. Do not push to `main`.
+- ChatGPT Codex — vault batch: after the provider-neutral path exists, run it for every Person with `ToEnhance` true. Same git rules as the vault Now line. Do not push to `main`. Do not retouch HTML.
+- Claude Code — front end polish: empty states and labels match the provider-neutral enrichment fields after the vault and first front-end lines ship. Committed HTML and templates only. Do not push to `main`.
 
 ## Done
 
