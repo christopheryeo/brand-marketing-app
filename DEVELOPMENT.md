@@ -26,7 +26,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 8. Done is one dated handoff list. Each line is tagged implement, wiki, or maintenance, then who, then what. Tags sit on the line. ChatGPT Codex uses wiki only. Claude Code uses implement or maintenance only. Do not make separate headings. Do not add a Feature tag. Done gets a line only when the named tool actually opened this file.
 9. `CLAUDE.md` imports `AGENTS.md` first, then this file.
 10. The tool named on a Now line commits that work to a branch and opens or updates a PR. Nobody pushes to `main`. Nobody commits gitignored files (`entities/*` person notes, `Apps/wiki-data.js`, `Apps/people-directory.html`). ChatGPT Codex on a wiki line commits only tracked files (`scripts/`, `index.md`, `log.md`). Claude Code does the same for implement lines.
-11. The named tool may delete only the Now line it just finished, in the same PR as Done. It must not add Now or Next. Felix still writes Now and Next.
+11. One Now cycle is one branch and one PR. In that same PR the named tool must (a) commit the Now work, (b) delete only the Now line it just finished, and (c) append one Done line. Do not open a second PR only to clear Now. Do not clear Now without Done. Do not add Now or Next. Felix still writes Now and Next.
 
 ## Now (prompt for the named tool)
 
