@@ -76,6 +76,8 @@ for fn in sorted(os.listdir(pdir)):
         "clayEnhanced": fm.get("clayEnhanced"),
         "enrichmentProvider": fm.get("enrichmentProvider"),
         "enrichmentDate": fm.get("enrichmentDate"),
+        "enrichmentStatus": fm.get("enrichmentStatus"),
+        "enrichmentFound": fm.get("enrichmentFound"),
         "jobTitle": fm.get("jobTitle") or fm.get("currentRole"),
         "company": fm.get("company"),
         "location": fm.get("location"),

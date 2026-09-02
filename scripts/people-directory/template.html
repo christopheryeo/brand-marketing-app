@@ -144,7 +144,15 @@ function enrichmentInfo(p){
   return {date,provider};
 }
 function prettyProvider(p){if(!p)return '';const m={clay:'Clay',linkedin:'LinkedIn'};const k=String(p).toLowerCase();return m[k]||(p[0].toUpperCase()+p.slice(1));}
+// Enrichment attempted but nothing useful landed — read a vault status field
+// (whatever the enrichment runner writes). Absent today, so this is inert until then.
+function enrichmentFailed(p){
+  if(!p)return false;
+  const s=p.enrichmentStatus!=null?String(p.enrichmentStatus).toLowerCase():(p.enrichmentFound===false?'not_found':'');
+  return ['failed','fail','no_match','no-match','not_found','not-found','none','empty','no_enrichment','no-enrichment','nothing_found'].includes(s);
+}
 function enrichmentDisplay(p){
+  if(enrichmentFailed(p))return 'No enrichment found';
   const e=enrichmentInfo(p);
   if(!e)return '—';
   const d=fmtDate(e.date);
@@ -153,7 +161,7 @@ function enrichmentDisplay(p){
 function fmtMonth(ym){if(!ym)return '';const m=/^(\d{4})-(\d{2})/.exec(String(ym));if(!m)return String(ym);return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1]+' '+m[1];}
 // Enriched profile: contact + role fields enrichment wrote, for enriched people
 function enrichedProfileBlock(p){
-  if(!enrichmentInfo(p))return '';
+  if(enrichmentFailed(p)||!enrichmentInfo(p))return '';
   const rows=[];
   if(p.jobTitle)rows.push(['Job title',esc(p.jobTitle)]);
   if(p.company)rows.push(['Company',esc(p.company)]);
