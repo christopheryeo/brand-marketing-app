@@ -74,7 +74,6 @@
   .te{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
   .te input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;margin:0}
   .te input:disabled{cursor:not-allowed;opacity:.6}
-  .te-state{font-weight:550}
   .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:600}
   .badge.active{background:#dcfce7;color:#166534}
   @media (prefers-color-scheme:dark){.badge.active{background:#0f2e1c;color:#4ade80}}
@@ -176,16 +175,11 @@ function field(k,v,opts){
 
 // --- To Enhance checkbox (persists to the vault via the local server) ---
 const CAN_EDIT = location.protocol === 'http:' || location.protocol === 'https:';
-function teLabel(v){ return v==null ? 'Not assessed' : (v ? 'Yes — enhance' : 'No'); }
 function toEnhanceControl(p){
   const checked = p.ToEnhance === true ? ' checked' : '';
   const dis = CAN_EDIT ? '' : ' disabled';
-  const hint = CAN_EDIT ? '' : ' title="Open via ‘People Directory.command’ to tick this"';
-  return `<label class="te"${hint}><input type="checkbox"${checked}${dis} data-teid="${esc(p.id)}" onchange="toggleToEnhance(this)"><span class="te-state">${teLabel(p.ToEnhance)}</span></label>`;
-}
-function syncTeState(cb, value){
-  const span = cb.parentElement && cb.parentElement.querySelector('.te-state');
-  if(span) span.textContent = teLabel(value);
+  const hint = CAN_EDIT ? ' title="Tick to flag this person for enhancement"' : ' title="Open via ‘People Directory.command’ to tick this"';
+  return `<label class="te"${hint}><input type="checkbox"${checked}${dis} data-teid="${esc(p.id)}" onchange="toggleToEnhance(this)"></label>`;
 }
 async function toggleToEnhance(cb){
   const id = cb.getAttribute('data-teid');
@@ -196,7 +190,6 @@ async function toggleToEnhance(cb){
     const j = await r.json();
     if(j.status !== 'ok') throw new Error(j.error || 'save failed');
     const p = PEOPLE.find(x=>x.id===id); if(p) p.ToEnhance = value;
-    syncTeState(cb, value);
   }catch(e){
     cb.checked = !value;
     alert('Could not save “To Enhance”: ' + e.message + '\nMake sure you opened this via “People Directory.command”.');
@@ -251,7 +244,7 @@ function selectPerson(id){
       if(j && j.status==='ok' && activeId===id){
         const pp = PEOPLE.find(x=>x.id===id); if(pp) pp.ToEnhance = j.value;
         const cb = detailEl.querySelector('input[type=checkbox][data-teid]');
-        if(cb){ cb.checked = j.value===true; syncTeState(cb, j.value); }
+        if(cb){ cb.checked = j.value===true; }
       }
     }).catch(()=>{});
   }

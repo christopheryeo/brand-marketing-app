@@ -74,6 +74,8 @@ for fn in sorted(os.listdir(pdir)):
         "created": fm.get("createdAt"),
         "updated": fm.get("updatedAt"),
         "clayEnhanced": fm.get("clayEnhanced"),
+        "enrichmentProvider": fm.get("enrichmentProvider"),
+        "enrichmentDate": fm.get("enrichmentDate"),
         "ToEnhance": fm.get("ToEnhance"),
         "aliases": fm.get("aliases") or [],
         "tags": fm.get("tags") or [],

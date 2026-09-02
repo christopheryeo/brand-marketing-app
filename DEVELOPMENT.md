@@ -32,7 +32,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- Claude Code — front end polish: close the People Directory provider+date gap by updating `scripts/people-directory/build_people_directory.py` so it passes `enrichmentProvider` and `enrichmentDate` into the directory, then adjust templates/empty states so both surfaces match. Do not commit gitignored `Apps/people-directory.html` or person notes. Do not push to `main`. Finish in one PR with work, clear Now, and Done (Policy 11).
+- (none)
 
 ## Next
 
@@ -43,6 +43,7 @@ Format: tool — surface — files it may touch — files it must not touch — 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
 - 2026-09-02 SGT — wiki — ChatGPT Codex — completed the `ToEnhance` Person batch: Clay found no verified contact match for the sole queued record, so the LinkedIn fallback recorded the verified profile, current role, and professional history; the queue is now clear
+- 2026-09-02 SGT — implement — Claude Code — People Directory now surfaces provider+date (build passes `enrichmentProvider`/`enrichmentDate`; shows "Enriched: date · provider"); To Enhance checkbox simplified to a bare box to match the Wiki Browser
 - 2026-09-02 SGT — implement — Claude Code — People Directory and Wiki Browser show enrichment provider-neutrally ("Enriched: date · provider", reading `enrichmentProvider`/`enrichmentDate` with `clayEnhanced` fallback) instead of Clay-only framing; `ToEnhance` kept as the editable queue flag
 - 2026-09-02 SGT — wiki — ChatGPT Codex — added provider-neutral person enrichment writeback (scripts/record_enrichment.py; Clay mark path updated); Now was cleared in a separate PR, so this line records the missing Done.
 - 2026-09-01 SGT — maintenance — Claude Code — audited committed HTML (`Apps/wiki-browser.html` and tracked `scripts/**/*.html` templates) for private data such as emails and company names; none found (data stays in gitignored `wiki-data.js` / `people-directory.html`)
