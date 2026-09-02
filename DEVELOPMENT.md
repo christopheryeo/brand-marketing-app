@@ -32,11 +32,10 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- ChatGPT Codex — vault people: for every Person with `ToEnhance` true, enhance that record through the Clay plugin. Write into gitignored person notes only. After a verified Clay success, record it with `scripts/mark_clay_enhanced.py`. Do not rewrite that script. Do not commit `entities/people/*.md` person notes, `Apps/wiki-data.js`, or `Apps/people-directory.html`. You may append tracked `entities/people/log.md`. Do not push to `main`. Do not retouch HTML.
+- ChatGPT Codex — vault: make people enrichment provider-neutral. Clay for verified contacts when available; LinkedIn as fallback for professional history. Record provider and date. Clear `ToEnhance` only when the minimum useful profile is present. Extend or replace Clay-only mark scripts as needed. Write gitignored person notes only; you may append tracked `entities/people/log.md`. Do not commit person notes, `wiki-data.js`, or `people-directory.html`. Do not push to `main`. Do not retouch HTML.
 
 ## Next
 
-- ChatGPT Codex — vault: make people enrichment provider-neutral. Clay for verified contacts when available; LinkedIn as fallback for professional history. Record provider and date. Clear `ToEnhance` only when the minimum useful profile is present. Extend or replace Clay-only mark scripts as needed. Write gitignored person notes only; you may append tracked `entities/people/log.md`. Do not commit person notes, `wiki-data.js`, or `people-directory.html`. Do not push to `main`. Do not retouch HTML.
 - Claude Code — front end: People Directory and Wiki Browser show enrichment as a capability with provider and date, not Clay-only framing. Keep `ToEnhance` as the editable queue flag. Touch committed HTML and templates only. Do not scan or commit gitignored data files. Do not push to `main`.
 - ChatGPT Codex — vault batch: after the provider-neutral path exists, run it for every Person with `ToEnhance` true. Same git rules as the vault Now line. Do not push to `main`. Do not retouch HTML.
 - Claude Code — front end polish: empty states and labels match the provider-neutral enrichment fields after the vault and first front-end lines ship. Committed HTML and templates only. Do not push to `main`.
