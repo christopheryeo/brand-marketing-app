@@ -59,6 +59,9 @@ def record_clay_enhancement(
 
     changed_at = timestamp or now_sgt()
     data["clayEnhanced"] = date_value
+    # Generic fields are canonical; clayEnhanced remains for older consumers.
+    data["enrichmentProvider"] = "clay"
+    data["enrichmentDate"] = date_value
     data["updatedAt"] = changed_at
     _replace_frontmatter(path, data)
 
@@ -71,7 +74,8 @@ def record_clay_enhancement(
     with log_path.open("a", encoding="utf-8") as handle:
         handle.write(
             f"\n- {changed_at} | action: recorded successful Clay enhancement | "
-            f"entity: [[{person_id}]] | clayEnhanced: {date_value} | source: Clay connector\n"
+            f"entity: [[{person_id}]] | clayEnhanced: {date_value} | "
+            f"enrichmentProvider: clay | enrichmentDate: {date_value} | source: Clay connector\n"
         )
 
     return {
