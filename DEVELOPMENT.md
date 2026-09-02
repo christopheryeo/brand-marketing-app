@@ -32,7 +32,8 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- (none)
+- Claude Code — front end: on Wiki Browser person screen and People Directory detail, when a Person is Enriched, show the enriched profile itself — not only the Enriched stamp (provider + date). Surface contact and role fields that enrichment writes (`primaryEmail`/`email`, `phone`/`mobilePhone`, `linkedInUrl`, `jobTitle`/`currentRole`, `company`/`organisation`, `professionalHistory`) in a clear **Enriched profile** block so a user can see what changed after enrichment. Keep To Enhance as the editable queue flag. Touch committed HTML/templates and `scripts/people-directory/build_people_directory.py` as needed so the directory receives those fields. Do not invent a before/after audit trail (vault does not store a delta yet). Do not invent Features. Do not commit gitignored `Apps/wiki-data.js`, `Apps/people-directory.html`, or person notes. Do not push to `main`. Finish in one PR with work, clear this Now line, and one Done line (Policy 11).
+
 
 
 ## Next
