@@ -32,8 +32,6 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- ChatGPT Codex — vault: change people enrichment order to **Apollo.io first**, then Clay and/or LinkedIn using identifiers and fields Apollo already returned (email, LinkedIn URL, company, etc.). Extend or wrap `scripts/record_enrichment.py` and any enrichment runner Codex uses so provider + date still record which path completed the minimum useful profile; clear `ToEnhance` only then. When no provider lands a minimum useful profile, record a vault status the UI can read (e.g. enrichment failed / nothing found — `enrichmentStatus` / `enrichmentFound:false`) instead of leaving a silent empty Enriched stamp. Write gitignored person notes only; you may append tracked `entities/people/log.md`. Do not commit person notes, `wiki-data.js`, or `people-directory.html`. Do not retouch HTML except if a tiny docs note in root README is required. Do not invent Features. Do not push to `main`. Finish in one PR with work, clear this Now line, and one wiki Done line (Policy 11).
-
 ## Next
 
 - (none)
@@ -43,6 +41,7 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
+- 2026-09-02 SGT — wiki — ChatGPT Codex — added an Apollo.io-first Person enrichment runner with Clay and LinkedIn fallbacks that receive prior-provider identifiers, records only the provider that completes a minimum useful profile, clears ToEnhance only on success, and writes an explicit not-found status when all configured providers miss
 - 2026-09-02 SGT — implement — Claude Code — added a Refresh control to both apps: a header button posts to a new `POST /rebuild` endpoint on `ask_server.py` / `directory_server.py` that re-runs the build script server-side, then reloads — so enrichment and other vault edits show without a terminal rebuild; button appears only when served via the local server
 - 2026-09-02 SGT — implement — Claude Code — both person screens now show a clear "No enrichment found" state when enrichment was attempted but nothing useful landed, instead of a silent em-dash stamp / empty profile block; reads a vault status field (`enrichmentStatus`, or `enrichmentFound:false`) and passes it through the builders — inert until the enrichment runner writes it, no regression to enriched/not-attempted states
 - 2026-09-02 SGT — wiki — ChatGPT Codex — enriched Allan Kwek and Alvin Lim after Clay returned no verified contact match; LinkedIn fallback recorded each verified current role, company, location and professional profile, and cleared both ToEnhance flags

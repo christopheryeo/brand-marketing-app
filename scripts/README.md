@@ -30,7 +30,31 @@ The pipeline never edits the original source files. The default semantic adapter
 
 All failures produce a run receipt. Repairable generated-state failures can be retried with `repair`; ambiguous source facts remain in the run review queue. Every published semantic entity or outcome must pass exact-evidence, source-name, confidence and outcome-marker gates.
 
-## Clay enrichment writeback
+## Person enrichment
+
+Run provider adapters in the fixed Apollo.io, Clay, LinkedIn order. Apollo is
+required; Clay and LinkedIn are optional fallbacks. Each later adapter receives
+the identifiers and profile fields returned by earlier adapters. A provider is
+recorded only when the combined result reaches the minimum useful profile:
+either a verified email/phone, or a LinkedIn URL plus a professional detail.
+
+```bash
+python3 scripts/run_person_enrichment.py <personId> \
+  --provider-command 'apollo=path/to/apollo-adapter' \
+  --provider-command 'clay=path/to/clay-adapter' \
+  --provider-command 'linkedin=path/to/linkedin-adapter'
+```
+
+Adapters read a JSON request from standard input and return either a profile
+object or `{"profile": {...}}` as JSON. If every configured provider fails to
+produce a minimum useful profile, the runner keeps `ToEnhance` queued and writes
+`enrichmentStatus: not_found` plus `enrichmentFound: false` for the apps.
+
+`record_enrichment.py` remains available for recording a single already-
+verified result from Apollo.io, Clay, or LinkedIn. It rejects incomplete
+profiles rather than writing a misleading Enriched stamp.
+
+## Legacy Clay enrichment writeback
 
 After the Clay connector has successfully enhanced a canonical Person record,
 record the completion date in SGT:
