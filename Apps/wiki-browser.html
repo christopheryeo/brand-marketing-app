@@ -103,6 +103,11 @@
   .te{display:inline-flex;align-items:center;gap:8px;cursor:pointer;user-select:none}
   .te input{width:16px;height:16px;accent-color:var(--accent);cursor:pointer;margin:0}
   .te input:disabled{cursor:not-allowed;opacity:.6}
+  .prof-hist{border:1px solid var(--border);border-radius:12px;overflow:hidden;box-shadow:var(--shadow)}
+  .ph-item{background:var(--panel);padding:11px 15px;border-top:1px solid var(--border)}
+  .ph-item:first-child{border-top:none}
+  .ph-title{font-weight:600}
+  .ph-sub{font-size:12.5px;color:var(--muted);margin-top:1px}
   .badge{display:inline-block;padding:2px 9px;border-radius:20px;font-size:12px;font-weight:600;background:var(--chip);color:var(--muted)}
   .badge.active{background:#dcfce7;color:#166534}
   @media (prefers-color-scheme:dark){.badge.active{background:#0f2e1c;color:#4ade80}}
@@ -227,6 +232,30 @@ function enrichmentDisplay(f){
   if(!e)return '—';
   const d=fmtDateStr(e.date);
   return e.provider?`${esc(d)} · ${esc(prettyProvider(e.provider))}`:esc(d);
+}
+function fmtMonth(ym){if(!ym)return '';const m=/^(\d{4})-(\d{2})/.exec(String(ym));if(!m)return String(ym);return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1]+' '+m[1];}
+// Enriched profile: show the contact + role fields enrichment wrote, for enriched people
+function enrichedProfileBlock(n){
+  if(!isPerson(n.t)||!enrichmentInfo(n.f))return '';
+  const f=n.f, rows=[];
+  const jt=f.jobTitle||f.currentRole; if(jt)rows.push(['Job title',esc(jt)]);
+  const co=f.company||f.organisation; if(co)rows.push(['Company',esc(co)]);
+  if(f.location)rows.push(['Location',esc(f.location)]);
+  const ph=f.phone||f.mobilePhone; if(ph)rows.push(['Phone',esc(ph)]);
+  if(f.primaryEmail)rows.push(['Email',`<a href="mailto:${esc(f.primaryEmail)}">${esc(f.primaryEmail)}</a>`]);
+  if(f.linkedInUrl)rows.push(['LinkedIn',`<a href="${esc(f.linkedInUrl)}" target="_blank" rel="noopener">${esc(f.linkedInUrl.replace(/^https?:\/\/(www\.)?/,''))}</a>`]);
+  const grid=rows.length?'<div class="grid">'+rows.map(([k,v])=>`<div class="field"><div class="k">${k}</div><div class="v">${v}</div></div>`).join('')+'</div>':'';
+  let hist='';
+  if(Array.isArray(n.ph)&&n.ph.length){
+    hist='<div class="prof-hist">'+n.ph.map(r=>{
+      const span=[fmtMonth(r.start),r.end?fmtMonth(r.end):'Present'].filter(Boolean).join(' – ');
+      const sub=[esc(r.company||''),span].filter(Boolean).join(' · ');
+      return `<div class="ph-item"><div class="ph-title">${esc(r.title||'')}</div>${sub?`<div class="ph-sub">${sub}</div>`:''}</div>`;
+    }).join('')+'</div>';
+  }
+  if(!grid&&!hist)return '';
+  return `<div class="section-label">Enriched profile</div>${grid}`+
+    (hist?`<div class="section-label" style="margin-top:14px">Professional history</div>${hist}`:'');
 }
 // --- Editable "To Enhance" checkbox (persists to the vault via the local server) ---
 const CAN_EDIT = location.protocol==='http:'||location.protocol==='https:';
@@ -370,7 +399,8 @@ function renderDetail(id){
 
   // fields grid — enrichment fields are shown provider-neutrally below, not raw
   const skip=new Set(['linkedInUrl','primaryEmail','displayName','name','title','subject','query',
-    'clayEnhanced','enrichedAt','enrichedBy','enrichmentProvider','enrichmentDate']);
+    'clayEnhanced','enrichedAt','enrichedBy','enrichmentProvider','enrichmentDate',
+    'jobTitle','currentRole','company','organisation','location','phone','mobilePhone']);
   const fentries=Object.entries(n.f).filter(([k])=>!skip.has(k));
   const cells=fentries.map(([k,v])=>{
     const val=(k==='status')?`<span class="badge ${esc(v)}">${esc(v)}</span>`
@@ -414,6 +444,7 @@ function renderDetail(id){
       </div>
       ${contacts.length?`<div class="contact-chips">${contacts.join('')}</div>`:''}
       ${fgrid}
+      ${enrichedProfileBlock(n)}
       ${outHtml?'<div class="section-label">Relationships</div>'+outHtml:''}
       ${inHtml?'<div class="section-label">Referenced by</div>'+inHtml:''}
       ${aliases}${tags}

@@ -170,9 +170,16 @@ for nid, (tk, fm, idf) in records.items():
         if key not in seen:
             seen.add(key); ul.append([rel, tid])
 
-    nodes[nid] = {"t": tk, "n": name_of.get(nid, nid), "f": fields, "l": ul,
-                  "al": [clean_name(a) for a in (fm.get("aliases") or []) if isinstance(a, str)],
-                  "tg": [t for t in (fm.get("tags") or []) if isinstance(t, str)]}
+    node = {"t": tk, "n": name_of.get(nid, nid), "f": fields, "l": ul,
+            "al": [clean_name(a) for a in (fm.get("aliases") or []) if isinstance(a, str)],
+            "tg": [t for t in (fm.get("tags") or []) if isinstance(t, str)]}
+    # People: carry the enriched professional history (array of roles) so the
+    # person screen can show the enriched profile, not just the Enriched stamp.
+    if tk == "people":
+        ph = fm.get("professionalHistory")
+        if isinstance(ph, list) and ph:
+            node["ph"] = [r for r in ph if isinstance(r, dict)]
+    nodes[nid] = node
 
 types_meta = []
 for type_key, label, icon, tip in TYPES:
