@@ -32,7 +32,6 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- ChatGPT Codex — vault: make people enrichment provider-neutral. Clay for verified contacts when available; LinkedIn as fallback for professional history. Record provider and date. Clear `ToEnhance` only when the minimum useful profile is present. Extend or replace Clay-only mark scripts as needed. Write gitignored person notes only; you may append tracked `entities/people/log.md`. Do not commit person notes, `wiki-data.js`, or `people-directory.html`. Do not push to `main`. Do not retouch HTML.
 
 ## Next
 
