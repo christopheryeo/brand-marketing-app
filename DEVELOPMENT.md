@@ -32,12 +32,11 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- (none)
+- ChatGPT Codex — vault batch: for every Person with `ToEnhance` true, run the provider-neutral enrichment path (`scripts/record_enrichment.py`). Clay for verified contacts when available; LinkedIn as fallback for professional history. Write gitignored person notes only; you may append tracked `entities/people/log.md`. Do not commit person notes, `wiki-data.js`, or `people-directory.html`. Do not push to `main`. Do not retouch HTML. Finish in one PR with work, clear this Now line, and one wiki Done line (Policy 11).
 
 ## Next
 
-- ChatGPT Codex — vault batch: after the provider-neutral path exists, run it for every Person with `ToEnhance` true. Same git rules as the vault Now line. Do not push to `main`. Do not retouch HTML.
-- Claude Code — front end polish: empty states and labels match the provider-neutral enrichment fields after the vault and first front-end lines ship. Committed HTML and templates only. Do not push to `main`.
+- Claude Code — front end polish: close the People Directory provider+date gap by updating `scripts/people-directory/build_people_directory.py` so it passes `enrichmentProvider` and `enrichmentDate` into the directory, then adjust templates/empty states so both surfaces match. Do not commit gitignored `Apps/people-directory.html` or person notes. Do not push to `main`. Finish in one PR with work, clear Now, and Done (Policy 11).
 
 ## Done
 
