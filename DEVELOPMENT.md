@@ -32,11 +32,11 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- (none)
+- ChatGPT Codex — vault: change people enrichment order to **Apollo.io first**, then Clay and/or LinkedIn using identifiers and fields Apollo already returned (email, LinkedIn URL, company, etc.). Extend or wrap `scripts/record_enrichment.py` and any enrichment runner Codex uses so provider + date still record which path completed the minimum useful profile; clear `ToEnhance` only then. When no provider lands a minimum useful profile, record a vault status the UI can read (e.g. enrichment failed / nothing found — `enrichmentStatus` / `enrichmentFound:false`) instead of leaving a silent empty Enriched stamp. Write gitignored person notes only; you may append tracked `entities/people/log.md`. Do not commit person notes, `wiki-data.js`, or `people-directory.html`. Do not retouch HTML except if a tiny docs note in root README is required. Do not invent Features. Do not push to `main`. Finish in one PR with work, clear this Now line, and one wiki Done line (Policy 11).
 
 ## Next
 
-- ChatGPT Codex — vault: change people enrichment order to **Apollo.io first**, then Clay and/or LinkedIn using identifiers and fields Apollo already returned (email, LinkedIn URL, company, etc.). Extend or wrap `scripts/record_enrichment.py` and any enrichment runner Codex uses so provider + date still record which path completed the minimum useful profile; clear `ToEnhance` only then. When no provider lands a minimum useful profile, record a vault status the UI can read (e.g. enrichment failed / nothing found) instead of leaving a silent empty Enriched stamp. Do not start this Now until the Apollo.io connector is installed and authenticated. Write gitignored person notes only; you may append tracked `entities/people/log.md`. Do not commit person notes, `wiki-data.js`, or `people-directory.html`. Do not retouch HTML except if a tiny docs note in root README is required. Do not invent Features. Do not push to `main`. Finish in one PR with work, clear Now, and one wiki Done line (Policy 11).
+- (none)
 
 
 ## Done
