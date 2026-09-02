@@ -32,10 +32,10 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
+- Claude Code — front end: People Directory and Wiki Browser show enrichment as a capability with provider and date, not Clay-only framing. Keep `ToEnhance` as the editable queue flag. Touch committed HTML and templates only. Do not scan or commit gitignored data files. Do not push to `main`.
 
 ## Next
 
-- Claude Code — front end: People Directory and Wiki Browser show enrichment as a capability with provider and date, not Clay-only framing. Keep `ToEnhance` as the editable queue flag. Touch committed HTML and templates only. Do not scan or commit gitignored data files. Do not push to `main`.
 - ChatGPT Codex — vault batch: after the provider-neutral path exists, run it for every Person with `ToEnhance` true. Same git rules as the vault Now line. Do not push to `main`. Do not retouch HTML.
 - Claude Code — front end polish: empty states and labels match the provider-neutral enrichment fields after the vault and first front-end lines ship. Committed HTML and templates only. Do not push to `main`.
 
