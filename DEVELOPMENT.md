@@ -32,7 +32,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- Claude Code — front end: People Directory and Wiki Browser show enrichment as a capability with provider and date, not Clay-only framing. Keep `ToEnhance` as the editable queue flag. Touch committed HTML and templates only. Do not scan or commit gitignored data files. Do not push to `main`.
+- (none)
 
 ## Next
 
@@ -43,5 +43,6 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
+- 2026-09-02 SGT — implement — Claude Code — People Directory and Wiki Browser show enrichment provider-neutrally ("Enriched: date · provider", reading `enrichmentProvider`/`enrichmentDate` with `clayEnhanced` fallback) instead of Clay-only framing; `ToEnhance` kept as the editable queue flag
 - 2026-09-02 SGT — wiki — ChatGPT Codex — added provider-neutral person enrichment writeback (scripts/record_enrichment.py; Clay mark path updated); Now was cleared in a separate PR, so this line records the missing Done.
 - 2026-09-01 SGT — maintenance — Claude Code — audited committed HTML (`Apps/wiki-browser.html` and tracked `scripts/**/*.html` templates) for private data such as emails and company names; none found (data stays in gitignored `wiki-data.js` / `people-directory.html`)

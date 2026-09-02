@@ -131,6 +131,21 @@ const PALETTE = ['#3b82f6','#8b5cf6','#ec4899','#f59e0b','#10b981','#06b6d4','#e
 function colorFor(s){let h=0;for(const c of String(s))h=(h*31+c.charCodeAt(0))>>>0;return PALETTE[h%PALETTE.length];}
 function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));}
 function fmtDate(iso){if(!iso)return '—';const d=new Date(iso);return isNaN(d)?iso:d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});}
+// --- Enrichment (provider-neutral): show the provider + date, not Clay-only framing ---
+function enrichmentInfo(p){
+  const date=p.enrichedAt||p.enrichmentDate||p.clayEnhanced||null;
+  if(!date)return null;
+  let provider=p.enrichedBy||p.enrichmentProvider||null;
+  if(!provider&&p.clayEnhanced)provider='Clay';
+  return {date,provider};
+}
+function prettyProvider(p){if(!p)return '';const m={clay:'Clay',linkedin:'LinkedIn'};const k=String(p).toLowerCase();return m[k]||(p[0].toUpperCase()+p.slice(1));}
+function enrichmentDisplay(p){
+  const e=enrichmentInfo(p);
+  if(!e)return '—';
+  const d=fmtDate(e.date);
+  return e.provider?`${esc(d)} · ${esc(prettyProvider(e.provider))}`:esc(d);
+}
 
 let activeId = null;
 
@@ -207,7 +222,7 @@ function selectPerson(id){
   fields.push(field('Status', p.status?`<span class="badge ${esc(p.status)}">${esc(p.status)}</span>`:'—'));
   fields.push(field('Confidence', p.confidence==null?'—':esc((p.confidence*100).toFixed(0))+'%'));
   fields.push(field('To Enhance', toEnhanceControl(p)));
-  fields.push(field('Clay Enhanced', esc(fmtDate(p.clayEnhanced))));
+  fields.push(field('Enriched', enrichmentDisplay(p)));
   fields.push(field('Created', esc(fmtDate(p.created))));
   fields.push(field('Updated', esc(fmtDate(p.updated))));
 
