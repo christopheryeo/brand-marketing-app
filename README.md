@@ -41,8 +41,12 @@ untick to clear it (`false`). Ticking saves straight to the person's vault recor
 audit line in `entities/people/log.md`; it only saves through the `.command` launchers
 (opening an HTML file directly shows the checkbox read-only).
 
-- **Enrichment writeback:** `scripts/record_enrichment.py` records a verified Clay or
-  LinkedIn enrichment on a Person.
+- **Enrichment runner:** `scripts/run_person_enrichment.py` tries Apollo.io first,
+  then configured Clay and LinkedIn fallbacks, carrying forward identifiers and
+  fields from each attempt. It clears `ToEnhance` only after a minimum useful
+  profile lands; otherwise it records the explicit no-enrichment state the apps show.
+- **Enrichment writeback:** `scripts/record_enrichment.py` records a single verified
+  Apollo.io, Clay, or LinkedIn result.
 - **Ask the Wiki** needs the local server because a static HTML file can't hold an API
   key or call a model; plain browsing of `wiki-browser.html` still works offline.
 
