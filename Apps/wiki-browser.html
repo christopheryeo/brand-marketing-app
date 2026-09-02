@@ -172,6 +172,7 @@
       <div class="sub" id="subhead">Relationship, campaign & communications vault</div>
     </div>
     <div class="spacer"></div>
+    <button class="navbtn" id="refreshBtn" title="Refresh — rebuild from the vault and reload" style="display:none">↻</button>
     <button class="navbtn" id="backBtn" title="Back">‹</button>
     <button class="navbtn" id="fwdBtn" title="Forward">›</button>
   </header>
@@ -267,6 +268,20 @@ function enrichedProfileBlock(n){
 }
 // --- Editable "To Enhance" checkbox (persists to the vault via the local server) ---
 const CAN_EDIT = location.protocol==='http:'||location.protocol==='https:';
+// Refresh: ask the local server to rebuild wiki data from the vault, then reload
+async function doRefresh(btn){
+  btn.disabled=true; const old=btn.textContent; btn.textContent='…';
+  try{
+    const r=await fetch('/rebuild',{method:'POST'});
+    const j=await r.json();
+    if(j.status!=='ok') throw new Error(j.error||'rebuild failed');
+    location.reload();
+  }catch(e){
+    btn.disabled=false; btn.textContent=old;
+    alert('Refresh failed: '+e.message+'\nMake sure you opened this via “Ask the Wiki.command”.');
+  }
+}
+(function(){const rb=document.getElementById('refreshBtn'); if(rb&&CAN_EDIT){rb.style.display=''; rb.onclick=()=>doRefresh(rb);}})();
 function toEnhanceControl(id,v){
   const checked=v===true?' checked':'';
   const dis=CAN_EDIT?'':' disabled';

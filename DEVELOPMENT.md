@@ -32,7 +32,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- Claude Code — front end: add a **Refresh** control on the People Directory (and Wiki Browser if it can hit a local server) that tells the local server to rebuild live wiki data from the vault (`build_people_directory.py` / `build_wiki.py`) and reload so enrichment and other vault edits show without a manual terminal rebuild. Extend `scripts/people-directory/directory_server.py` (and wiki ask/build path as needed) with a safe rebuild endpoint; touch templates / tracked `Apps/wiki-browser.html` shell only. Do not commit gitignored `Apps/people-directory.html` or `Apps/wiki-data.js`. Do not push to `main`. Finish in one PR with work, clear this Now line, and one Done line (Policy 11).
+- (none)
 
 ## Next
 
@@ -43,6 +43,7 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
+- 2026-09-02 SGT — implement — Claude Code — added a Refresh control to both apps: a header button posts to a new `POST /rebuild` endpoint on `ask_server.py` / `directory_server.py` that re-runs the build script server-side, then reloads — so enrichment and other vault edits show without a terminal rebuild; button appears only when served via the local server
 - 2026-09-02 SGT — implement — Claude Code — both person screens now show a clear "No enrichment found" state when enrichment was attempted but nothing useful landed, instead of a silent em-dash stamp / empty profile block; reads a vault status field (`enrichmentStatus`, or `enrichmentFound:false`) and passes it through the builders — inert until the enrichment runner writes it, no regression to enriched/not-attempted states
 - 2026-09-02 SGT — wiki — ChatGPT Codex — enriched Allan Kwek and Alvin Lim after Clay returned no verified contact match; LinkedIn fallback recorded each verified current role, company, location and professional profile, and cleared both ToEnhance flags
 - 2026-09-02 SGT — implement — Claude Code — added an "Enriched profile" block on both person screens (Wiki Browser + People Directory): shows job title, company, location, phone, email, LinkedIn and a formatted professional-history list for enriched people; builds now carry those fields (Wiki node `ph`; PD passthrough). No before/after delta. To Enhance kept as the editable queue flag.
