@@ -15,6 +15,7 @@ Set IB_VAULT_ROOT to point at a different vault (used for testing).
 
 import json
 import os
+import subprocess
 import sys
 import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -60,7 +61,18 @@ class Handler(BaseHTTPRequestHandler):
             self._send(404, "Not found", "text/plain")
 
     def do_POST(self):
-        if urlparse(self.path).path != "/set-to-enhance":
+        route = urlparse(self.path).path
+        if route == "/rebuild":
+            try:
+                build = os.path.join(HERE, "build_people_directory.py")
+                r = subprocess.run([sys.executable, build], capture_output=True, text=True, timeout=600)
+                if r.returncode != 0:
+                    raise RuntimeError((r.stderr or r.stdout or "build failed").strip()[:500])
+                self._send(200, json.dumps({"status": "ok"}))
+            except Exception as error:
+                self._send(500, json.dumps({"status": "failed", "error": f"{type(error).__name__}: {error}"}))
+            return
+        if route != "/set-to-enhance":
             self._send(404, "Not found", "text/plain")
             return
         try:

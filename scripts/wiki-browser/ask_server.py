@@ -11,7 +11,7 @@ Local "Ask the Wiki" server for the Influential Brands knowledge vault.
 Run:  python3 ask_server.py       (or double-click "Ask the Wiki.command")
 Stdlib only — no pip installs.
 """
-import os, re, sys, json, threading, webbrowser, urllib.request, urllib.error
+import os, re, sys, json, threading, subprocess, webbrowser, urllib.request, urllib.error
 from pathlib import Path
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
@@ -309,6 +309,16 @@ class Handler(BaseHTTPRequestHandler):
         else:
             self._send(404, "Not found", "text/plain")
     def do_POST(self):
+        if self.path == "/rebuild":
+            try:
+                build = os.path.join(SCRIPT_DIR, "build_wiki.py")
+                r = subprocess.run([sys.executable, build], capture_output=True, text=True, timeout=600)
+                if r.returncode != 0:
+                    raise RuntimeError((r.stderr or r.stdout or "build failed").strip()[:500])
+                self._send(200, json.dumps({"status": "ok"}))
+            except Exception as e:
+                self._send(500, json.dumps({"status": "failed", "error": f"{type(e).__name__}: {e}"}))
+            return
         if self.path == "/set-to-enhance":
             try:
                 n = int(self.headers.get("Content-Length", 0))

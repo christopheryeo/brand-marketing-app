@@ -30,6 +30,10 @@
   header .sub{font-size:12.5px;color:var(--muted);margin-top:1px}
   header .spacer{flex:1}
   header .count{font-size:12.5px;color:var(--muted);background:var(--chip);padding:5px 11px;border-radius:20px;font-weight:550}
+  .refreshbtn{font:inherit;font-size:12.5px;font-weight:600;color:var(--accent);background:var(--accent-soft);
+    border:1px solid transparent;border-radius:9px;padding:6px 12px;margin-right:12px;cursor:pointer}
+  .refreshbtn:hover:not(:disabled){border-color:var(--accent)}
+  .refreshbtn:disabled{opacity:.6;cursor:default}
   .body{display:flex;flex:1;min-height:0}
   /* List column */
   .list-col{width:360px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--panel)}
@@ -99,6 +103,7 @@
       <div class="sub">Knowledge Wiki · People entities</div>
     </div>
     <div class="spacer"></div>
+    <button class="refreshbtn" id="refreshBtn" title="Rebuild from the vault and reload" style="display:none">↻ Refresh</button>
     <div class="count"><span id="countN">__COUNT__</span> people</div>
   </header>
   <div class="body">
@@ -212,6 +217,20 @@ function field(k,v,opts){
 
 // --- To Enhance checkbox (persists to the vault via the local server) ---
 const CAN_EDIT = location.protocol === 'http:' || location.protocol === 'https:';
+// Refresh: ask the local server to rebuild the directory from the vault, then reload
+async function doRefresh(btn){
+  btn.disabled=true; const old=btn.textContent; btn.textContent='Refreshing…';
+  try{
+    const r=await fetch('/rebuild',{method:'POST'});
+    const j=await r.json();
+    if(j.status!=='ok') throw new Error(j.error||'rebuild failed');
+    location.reload();
+  }catch(e){
+    btn.disabled=false; btn.textContent=old;
+    alert('Refresh failed: '+e.message+'\nMake sure you opened this via “People Directory.command”.');
+  }
+}
+(function(){const rb=document.getElementById('refreshBtn'); if(rb&&CAN_EDIT){rb.style.display=''; rb.onclick=()=>doRefresh(rb);}})();
 function toEnhanceControl(p){
   const checked = p.ToEnhance === true ? ' checked' : '';
   const dis = CAN_EDIT ? '' : ' disabled';
