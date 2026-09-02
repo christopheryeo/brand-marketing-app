@@ -32,9 +32,11 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
+- Claude Code — front end polish: close the People Directory provider+date gap by updating `scripts/people-directory/build_people_directory.py` so it passes `enrichmentProvider` and `enrichmentDate` into the directory, then adjust templates/empty states so both surfaces match. Do not commit gitignored `Apps/people-directory.html` or person notes. Do not push to `main`. Finish in one PR with work, clear Now, and Done (Policy 11).
+
 ## Next
 
-- Claude Code — front end polish: close the People Directory provider+date gap by updating `scripts/people-directory/build_people_directory.py` so it passes `enrichmentProvider` and `enrichmentDate` into the directory, then adjust templates/empty states so both surfaces match. Do not commit gitignored `Apps/people-directory.html` or person notes. Do not push to `main`. Finish in one PR with work, clear Now, and Done (Policy 11).
+- (none)
 
 ## Done
 
