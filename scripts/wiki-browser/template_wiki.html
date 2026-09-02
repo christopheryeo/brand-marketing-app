@@ -211,6 +211,23 @@ function initials(name){const p=String(name).replace(/[^A-Za-z0-9 ]/g,' ').trim(
   return p.length?(p[0][0]+(p.length>1?p[p.length-1][0]:'')).toUpperCase():'?';}
 function icon(t){return (TYPE_META[t]&&TYPE_META[t].icon)||'•';}
 function isPerson(t){return t==='people';}
+// --- Enrichment (provider-neutral): show the provider + date, not Clay-only framing ---
+function fmtDateStr(iso){if(!iso)return '';const d=new Date(iso);return isNaN(d)?String(iso):d.toLocaleDateString(undefined,{year:'numeric',month:'short',day:'numeric'});}
+function enrichmentInfo(f){
+  if(!f)return null;
+  const date=f.enrichedAt||f.enrichmentDate||f.clayEnhanced||null;
+  if(!date)return null;
+  let provider=f.enrichedBy||f.enrichmentProvider||null;
+  if(!provider&&f.clayEnhanced)provider='Clay';
+  return {date,provider};
+}
+function prettyProvider(p){if(!p)return '';const m={clay:'Clay',linkedin:'LinkedIn'};const k=String(p).toLowerCase();return m[k]||(p[0].toUpperCase()+p.slice(1));}
+function enrichmentDisplay(f){
+  const e=enrichmentInfo(f);
+  if(!e)return '—';
+  const d=fmtDateStr(e.date);
+  return e.provider?`${esc(d)} · ${esc(prettyProvider(e.provider))}`:esc(d);
+}
 // --- Editable "To Enhance" checkbox (persists to the vault via the local server) ---
 const CAN_EDIT = location.protocol==='http:'||location.protocol==='https:';
 function toEnhanceControl(id,v){
@@ -242,7 +259,7 @@ function fmtVal(k,v){
   return esc(v);
 }
 const FIELD_LABELS={primaryEmail:'Email',linkedInUrl:'LinkedIn',mentionCount:'Mentions',displayName:'Name',
-  clayEnhanced:'Clay Enhanced',ToEnhance:'To Enhance',
+  ToEnhance:'To Enhance',
   createdAt:'Created',updatedAt:'Updated',startDate:'Start',endDate:'End',sentAt:'Sent',receivedAt:'Received',
   locationType:'Location type',memberCount:'Members',reuseCount:'Reuse count',fileSize:'File size',
   mimeType:'MIME type',sourceType:'Source type',eventType:'Event type',originalFilename:'File',
@@ -351,17 +368,21 @@ function renderDetail(id){
   if(n.f.primaryEmail)contacts.push(`<a class="contact" href="mailto:${esc(n.f.primaryEmail)}">✉︎ ${esc(n.f.primaryEmail)}</a>`);
   if(n.f.linkedInUrl)contacts.push(`<a class="contact ghost" href="${esc(n.f.linkedInUrl)}" target="_blank" rel="noopener">in · LinkedIn</a>`);
 
-  // fields grid
-  const skip=new Set(['linkedInUrl','primaryEmail','displayName','name','title','subject','query']);
+  // fields grid — enrichment fields are shown provider-neutrally below, not raw
+  const skip=new Set(['linkedInUrl','primaryEmail','displayName','name','title','subject','query',
+    'clayEnhanced','enrichedAt','enrichedBy','enrichmentProvider','enrichmentDate']);
   const fentries=Object.entries(n.f).filter(([k])=>!skip.has(k));
+  const cells=fentries.map(([k,v])=>{
+    const val=(k==='status')?`<span class="badge ${esc(v)}">${esc(v)}</span>`
+      :(k==='ToEnhance'&&isPerson(n.t))?toEnhanceControl(id,v):fmtVal(k,v);
+    return `<div class="field"><div class="k">${esc(labelFor(k))}</div><div class="v">${val}</div></div>`;
+  });
+  if(isPerson(n.t)){
+    cells.push(`<div class="field"><div class="k">Enriched</div><div class="v">${enrichmentDisplay(n.f)}</div></div>`);
+  }
   let fgrid='';
-  if(fentries.length){
-    fgrid='<div class="section-label">Details</div><div class="grid">'+
-      fentries.map(([k,v])=>{
-        const val=(k==='status')?`<span class="badge ${esc(v)}">${esc(v)}</span>`
-          :(k==='ToEnhance'&&isPerson(n.t))?toEnhanceControl(id,v):fmtVal(k,v);
-        return `<div class="field"><div class="k">${esc(labelFor(k))}</div><div class="v">${val}</div></div>`;
-      }).join('')+'</div>';
+  if(cells.length){
+    fgrid='<div class="section-label">Details</div><div class="grid">'+cells.join('')+'</div>';
   }
 
   // outbound relationships grouped by rel label
