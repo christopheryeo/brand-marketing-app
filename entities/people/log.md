@@ -30,3 +30,9 @@ Append-only audit ledger. Never edit or delete prior entries; correct forward wi
 - 2026-08-28T21:55:35+08:00 | action: completed required nullable clayEnhanced migration | run: `20260828T214923-clay-enhanced-nullable` | source: [[decision-require-nullable-person-clay-enhanced-2026-08-28]] | result: 2,666 of 2,666 Person records contain `clayEnhanced`; date=0, null=2,666; all `ToEnhance` values and body hashes unchanged; idempotency re-run changed 0 records
 
 - 2026-09-02T12:05:31+08:00 | action: recorded successful linkedin enrichment | entity: [[person-agatha-pabloasia-com-121dbb64df]] | enrichmentProvider: linkedin | enrichmentDate: 2026-09-02 | minimumProfile: true
+
+- 2026-09-02T16:42:35+08:00 | action: set ToEnhance | entity: [[person-allan-kwek-mynews-com-my-9c4dead19f]] | ToEnhance: true | source: People Directory checkbox
+
+- 2026-09-02T16:42:43+08:00 | action: set ToEnhance | entity: [[person-alvin-bizlink-org-sg-ab93957289]] | ToEnhance: true | source: People Directory checkbox
+
+- 2026-09-02T17:18:15+08:00 | action: recorded successful linkedin enrichment | entity: [[person-allan-kwek-mynews-com-my-9c4dead19f]] | enrichmentProvider: linkedin | enrichmentDate: 2026-09-02 | minimumProfile: true
