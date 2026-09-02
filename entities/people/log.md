@@ -38,3 +38,11 @@ Append-only audit ledger. Never edit or delete prior entries; correct forward wi
 - 2026-09-02T17:18:15+08:00 | action: recorded successful linkedin enrichment | entity: [[person-allan-kwek-mynews-com-my-9c4dead19f]] | enrichmentProvider: linkedin | enrichmentDate: 2026-09-02 | minimumProfile: true
 
 - 2026-09-02T17:43:47+08:00 | action: recorded successful linkedin enrichment | entity: [[person-alvin-bizlink-org-sg-ab93957289]] | enrichmentProvider: linkedin | enrichmentDate: 2026-09-02 | minimumProfile: true
+
+- 2026-09-02T18:51:54+08:00 | action: set ToEnhance | entity: [[person-kenneth-tang-kornworth-com-hk-881e4eb85d]] | ToEnhance: true | source: People Directory checkbox
+
+- 2026-09-02T18:52:03+08:00 | action: set ToEnhance | entity: [[person-georgelim-shaw-com-sg-2980c0c947]] | ToEnhance: true | source: People Directory checkbox
+
+- 2026-09-02T18:55:08+08:00 | action: recorded successful apollo enrichment | entity: [[person-georgelim-shaw-com-sg-2980c0c947]] | enrichmentProvider: apollo | enrichmentDate: 2026-09-02 | minimumProfile: true
+
+- 2026-09-02T18:55:55+08:00 | action: enrichment found no minimum useful profile | entity: [[person-kenneth-tang-kornworth-com-hk-881e4eb85d]] | providers: apollo,clay,linkedin | enrichmentStatus: not_found | enrichmentFound: false
