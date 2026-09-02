@@ -32,7 +32,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- Claude Code — front end: when enrichment was attempted and nothing useful landed, both person screens (Wiki Browser + People Directory) must say so clearly — not a silent Em dash Enriched stamp or an empty Enriched profile block. Read the vault status for failed/empty enrichment (field Codex will write; if absent today, accept a clear `enrichmentStatus` / equivalent once present); pass it through the builders; show plain copy such as “No enrichment found.” Keep To Enhance as the editable queue flag. Touch `scripts/wiki-browser/template_wiki.html` / `build_wiki.py`, `scripts/people-directory/template.html` / `build_people_directory.py`, and tracked `Apps/wiki-browser.html` as needed. Do not invent Features. Do not commit gitignored builds or person notes. Do not push to `main`. Finish in one PR with work, clear this Now line, and one Done line (Policy 11).
+- (none)
 
 ## Next
 
@@ -44,6 +44,7 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
+- 2026-09-02 SGT — implement — Claude Code — both person screens now show a clear "No enrichment found" state when enrichment was attempted but nothing useful landed, instead of a silent em-dash stamp / empty profile block; reads a vault status field (`enrichmentStatus`, or `enrichmentFound:false`) and passes it through the builders — inert until the enrichment runner writes it, no regression to enriched/not-attempted states
 - 2026-09-02 SGT — wiki — ChatGPT Codex — enriched Allan Kwek and Alvin Lim after Clay returned no verified contact match; LinkedIn fallback recorded each verified current role, company, location and professional profile, and cleared both ToEnhance flags
 - 2026-09-02 SGT — implement — Claude Code — added an "Enriched profile" block on both person screens (Wiki Browser + People Directory): shows job title, company, location, phone, email, LinkedIn and a formatted professional-history list for enriched people; builds now carry those fields (Wiki node `ph`; PD passthrough). No before/after delta. To Enhance kept as the editable queue flag.
 - 2026-09-02 SGT — maintenance — Claude Code — consolidated repo docs into one root README (folder map matches disk: added `Apps/`, `DEVELOPMENT.md`, `CLAUDE.md`; dropped phantom `dashboards/`/`topics/`; folded in Apps content incl. Enriched = date · provider and editable To Enhance); deleted `Apps/README.md`

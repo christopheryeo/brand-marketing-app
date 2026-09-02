@@ -227,7 +227,15 @@ function enrichmentInfo(f){
   return {date,provider};
 }
 function prettyProvider(p){if(!p)return '';const m={clay:'Clay',linkedin:'LinkedIn'};const k=String(p).toLowerCase();return m[k]||(p[0].toUpperCase()+p.slice(1));}
+// Enrichment was attempted but nothing useful landed — read a vault status field
+// (whatever the enrichment runner writes). Absent today, so this is inert until then.
+function enrichmentFailed(f){
+  if(!f)return false;
+  const s=f.enrichmentStatus!=null?String(f.enrichmentStatus).toLowerCase():(f.enrichmentFound===false?'not_found':'');
+  return ['failed','fail','no_match','no-match','not_found','not-found','none','empty','no_enrichment','no-enrichment','nothing_found'].includes(s);
+}
 function enrichmentDisplay(f){
+  if(enrichmentFailed(f))return 'No enrichment found';
   const e=enrichmentInfo(f);
   if(!e)return '—';
   const d=fmtDateStr(e.date);
@@ -236,7 +244,7 @@ function enrichmentDisplay(f){
 function fmtMonth(ym){if(!ym)return '';const m=/^(\d{4})-(\d{2})/.exec(String(ym));if(!m)return String(ym);return ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'][+m[2]-1]+' '+m[1];}
 // Enriched profile: show the contact + role fields enrichment wrote, for enriched people
 function enrichedProfileBlock(n){
-  if(!isPerson(n.t)||!enrichmentInfo(n.f))return '';
+  if(!isPerson(n.t)||enrichmentFailed(n.f)||!enrichmentInfo(n.f))return '';
   const f=n.f, rows=[];
   const jt=f.jobTitle||f.currentRole; if(jt)rows.push(['Job title',esc(jt)]);
   const co=f.company||f.organisation; if(co)rows.push(['Company',esc(co)]);
@@ -400,7 +408,8 @@ function renderDetail(id){
   // fields grid — enrichment fields are shown provider-neutrally below, not raw
   const skip=new Set(['linkedInUrl','primaryEmail','displayName','name','title','subject','query',
     'clayEnhanced','enrichedAt','enrichedBy','enrichmentProvider','enrichmentDate',
-    'jobTitle','currentRole','company','organisation','location','phone','mobilePhone']);
+    'jobTitle','currentRole','company','organisation','location','phone','mobilePhone',
+    'enrichmentStatus','enrichmentFound']);
   const fentries=Object.entries(n.f).filter(([k])=>!skip.has(k));
   const cells=fentries.map(([k,v])=>{
     const val=(k==='status')?`<span class="badge ${esc(v)}">${esc(v)}</span>`
