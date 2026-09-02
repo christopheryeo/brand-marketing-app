@@ -32,7 +32,6 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- ChatGPT Codex — vault: enrich exactly two ToEnhance people via `scripts/record_enrichment.py`: Allan Kwek (`person-allan-kwek-mynews-com-my-9c4dead19f`) and Alvin Lim (`person-alvin-bizlink-org-sg-ab93957289`). For each, Clay for verified contacts when available, then LinkedIn fallback for professional history. Record provider and date. Clear `ToEnhance` only when the minimum useful profile is present. Write gitignored person notes only; you may append tracked `entities/people/log.md`. Do not commit person notes, `wiki-data.js`, or `people-directory.html`. Do not retouch HTML or templates. Do not invent Features. Do not push to `main`. Finish in one PR with work, clear this Now line, and one wiki Done line (Policy 11).
 
 
 
@@ -45,6 +44,7 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
+- 2026-09-02 SGT — wiki — ChatGPT Codex — enriched Allan Kwek and Alvin Lim after Clay returned no verified contact match; LinkedIn fallback recorded each verified current role, company, location and professional profile, and cleared both ToEnhance flags
 - 2026-09-02 SGT — implement — Claude Code — added an "Enriched profile" block on both person screens (Wiki Browser + People Directory): shows job title, company, location, phone, email, LinkedIn and a formatted professional-history list for enriched people; builds now carry those fields (Wiki node `ph`; PD passthrough). No before/after delta. To Enhance kept as the editable queue flag.
 - 2026-09-02 SGT — maintenance — Claude Code — consolidated repo docs into one root README (folder map matches disk: added `Apps/`, `DEVELOPMENT.md`, `CLAUDE.md`; dropped phantom `dashboards/`/`topics/`; folded in Apps content incl. Enriched = date · provider and editable To Enhance); deleted `Apps/README.md`
 - 2026-09-02 SGT — wiki — ChatGPT Codex — completed the `ToEnhance` Person batch: Clay found no verified contact match for the sole queued record, so the LinkedIn fallback recorded the verified profile, current role, and professional history; the queue is now clear

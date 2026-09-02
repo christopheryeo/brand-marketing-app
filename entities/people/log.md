@@ -36,3 +36,5 @@ Append-only audit ledger. Never edit or delete prior entries; correct forward wi
 - 2026-09-02T16:42:43+08:00 | action: set ToEnhance | entity: [[person-alvin-bizlink-org-sg-ab93957289]] | ToEnhance: true | source: People Directory checkbox
 
 - 2026-09-02T17:18:15+08:00 | action: recorded successful linkedin enrichment | entity: [[person-allan-kwek-mynews-com-my-9c4dead19f]] | enrichmentProvider: linkedin | enrichmentDate: 2026-09-02 | minimumProfile: true
+
+- 2026-09-02T17:43:47+08:00 | action: recorded successful linkedin enrichment | entity: [[person-alvin-bizlink-org-sg-ab93957289]] | enrichmentProvider: linkedin | enrichmentDate: 2026-09-02 | minimumProfile: true
