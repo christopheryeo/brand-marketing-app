@@ -32,13 +32,13 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-
-
-
+- (none)
 
 ## Next
 
-- (none)
+- ChatGPT Codex — vault: change people enrichment order to **Apollo.io first**, then Clay and/or LinkedIn using identifiers and fields Apollo already returned (email, LinkedIn URL, company, etc.). Extend or wrap `scripts/record_enrichment.py` and any enrichment runner Codex uses so provider + date still record which path completed the minimum useful profile; clear `ToEnhance` only then. Do not start this Now until the Apollo.io connector is installed and authenticated. Write gitignored person notes only; you may append tracked `entities/people/log.md`. Do not commit person notes, `wiki-data.js`, or `people-directory.html`. Do not retouch HTML except if a tiny docs note in root README is required. Do not invent Features. Do not push to `main`. Finish in one PR with work, clear Now, and one wiki Done line (Policy 11).
+- Claude Code — front end: add a **Refresh** control on the People Directory (and Wiki Browser if it can hit a local server) that tells the local server to rebuild live wiki data from the vault (`build_people_directory.py` / `build_wiki.py`) and reload so enrichment and other vault edits show without a manual terminal rebuild. Extend `scripts/people-directory/directory_server.py` (and wiki ask/build path as needed) with a safe rebuild endpoint; touch templates / tracked `Apps/wiki-browser.html` shell only. Do not commit gitignored `Apps/people-directory.html` or `Apps/wiki-data.js`. Do not push to `main`. Finish in one PR with work, clear Now, and one Done line (Policy 11).
+
 
 ## Done
 
