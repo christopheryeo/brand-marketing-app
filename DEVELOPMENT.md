@@ -32,7 +32,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- Claude Code — docs: consolidate to one root `README.md` for this repo (`christopheryeo/brand-marketing-app`). Keep the vault workflow. Folder map must match disk: include `Apps/`, `DEVELOPMENT.md`, and `CLAUDE.md`; drop phantom `dashboards/` and `topics/`. Fold in useful Apps content (Wiki Browser, People Directory, To Enhance, rebuild commands, **Enriched** as provider + date on both surfaces). Delete `Apps/README.md`. Do not invent Features. Do not commit gitignored app data (`wiki-data.js`, `people-directory.html`) or person notes. Do not push to `main`. Finish in one PR with work, clear this Now line, and one Done line (Policy 11).
+- (none)
 
 
 ## Next
@@ -43,6 +43,7 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
+- 2026-09-02 SGT — maintenance — Claude Code — consolidated repo docs into one root README (folder map matches disk: added `Apps/`, `DEVELOPMENT.md`, `CLAUDE.md`; dropped phantom `dashboards/`/`topics/`; folded in Apps content incl. Enriched = date · provider and editable To Enhance); deleted `Apps/README.md`
 - 2026-09-02 SGT — wiki — ChatGPT Codex — completed the `ToEnhance` Person batch: Clay found no verified contact match for the sole queued record, so the LinkedIn fallback recorded the verified profile, current role, and professional history; the queue is now clear
 - 2026-09-02 SGT — implement — Claude Code — People Directory now surfaces provider+date (build passes `enrichmentProvider`/`enrichmentDate`; shows "Enriched: date · provider"); To Enhance checkbox simplified to a bare box to match the Wiki Browser
 - 2026-09-02 SGT — implement — Claude Code — People Directory and Wiki Browser show enrichment provider-neutrally ("Enriched: date · provider", reading `enrichmentProvider`/`enrichmentDate` with `clayEnhanced` fallback) instead of Clay-only framing; `ToEnhance` kept as the editable queue flag
