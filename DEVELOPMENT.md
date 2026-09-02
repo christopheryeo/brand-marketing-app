@@ -32,7 +32,8 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- (none)
+- ChatGPT Codex — vault: enrich exactly two ToEnhance people via `scripts/record_enrichment.py`: Allan Kwek (`person-allan-kwek-mynews-com-my-9c4dead19f`) and Alvin Lim (`person-alvin-bizlink-org-sg-ab93957289`). For each, Clay for verified contacts when available, then LinkedIn fallback for professional history. Record provider and date. Clear `ToEnhance` only when the minimum useful profile is present. Write gitignored person notes only; you may append tracked `entities/people/log.md`. Do not commit person notes, `wiki-data.js`, or `people-directory.html`. Do not retouch HTML or templates. Do not invent Features. Do not push to `main`. Finish in one PR with work, clear this Now line, and one wiki Done line (Policy 11).
+
 
 
 
