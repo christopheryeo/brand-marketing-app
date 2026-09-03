@@ -43,6 +43,7 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
+- 2026-09-03 SGT — implement — Claude Code — branded both app headers with the Influential Brands wordmark (data-URI logo badge) and renamed the Wiki Browser title/heading to “Influential Brands Knowledge”; out-of-band of Now (direct Christopher request), recorded here via [PR #39](https://github.com/christopheryeo/brand-marketing-app/pull/39)
 - 2026-09-02 SGT — implement — Claude Code — Ask answers now render as readable formatted text (headings, bullet/numbered lists, bold, inline code) instead of raw markdown via a new mdToHtml in formatAnswer; renamed the Ask label/heading/placeholder to "Ask me something"; source chips unchanged
 - 2026-09-02 SGT — wiki — ChatGPT Codex — added an Apollo.io-first Person enrichment runner with Clay and LinkedIn fallbacks that receive prior-provider identifiers, records only the provider that completes a minimum useful profile, clears ToEnhance only on success, and writes an explicit not-found status when all configured providers miss
 - 2026-09-02 SGT — implement — Claude Code — added a Refresh control to both apps: a header button posts to a new `POST /rebuild` endpoint on `ask_server.py` / `directory_server.py` that re-runs the build script server-side, then reloads — so enrichment and other vault edits show without a terminal rebuild; button appears only when served via the local server
