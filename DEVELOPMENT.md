@@ -32,9 +32,11 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
+- Claude Code — front end: move each Wiki Browser **pane hide/show** control from the shared header bar to the **top-right of its own pane** (`.sidebar`, `.list-col`, `.detail-col`). Keep independent hide/restore without losing state. Touch `scripts/wiki-browser/template_wiki.html` and rebuild tracked `Apps/wiki-browser.html` if the shell changes. Do not invent Features. Do not commit gitignored `Apps/wiki-data.js` or person notes. Do not push to `main`. Finish in one PR with work, clear this Now line, and one Done line (Policy 11).
+
 ## Next
 
-- Claude Code — front end: move each Wiki Browser **pane hide/show** control from the shared header bar to the **top-right of its own pane** (`.sidebar`, `.list-col`, `.detail-col`). Keep independent hide/restore without losing state. Touch `scripts/wiki-browser/template_wiki.html` and rebuild tracked `Apps/wiki-browser.html` if the shell changes. Do not invent Features. Do not commit gitignored `Apps/wiki-data.js` or person notes. Do not push to `main`. Finish in one PR with work, clear Now, and one Done line (Policy 11) when promoted.
+- (none)
 
 
 ## Done
