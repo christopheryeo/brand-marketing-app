@@ -47,14 +47,29 @@
   .navbtn.on{background:linear-gradient(90deg,rgba(var(--accent-rgb),.20),rgba(var(--accent-rgb),.07));border-color:rgba(var(--accent-rgb),.38);color:var(--accent)}
   .navsep{width:1px;height:18px;background:var(--border);margin:0 3px}
   .body{display:flex;flex:1;min-height:0}
-  .body.hide-sidebar .sidebar{display:none}
-  .body.hide-list .list-col{display:none}
-  .body.hide-detail .detail-col{display:none}
+  /* Per-pane hide/show — the control lives at the top-right of each pane and
+     collapses it to a thin rail. Panes are only collapsed (content kept in the
+     DOM), so selection, scroll and search state are preserved. */
+  .pane-tog{position:absolute;top:8px;right:8px;z-index:6;width:24px;height:24px;border-radius:7px;
+    border:1px solid var(--border);background:var(--panel);color:var(--muted);cursor:pointer;
+    display:flex;align-items:center;justify-content:center;font-size:16px;line-height:1;padding:0;
+    opacity:.5;transition:opacity .15s,background .15s,color .15s}
+  .pane-tog:hover{opacity:1;background:var(--row-hover);color:var(--text)}
+  .body.hide-sidebar #sidebarPane{width:34px}
+  .body.hide-list #listPane{width:34px}
+  .body.hide-detail #detailPane{flex:0 0 34px;padding:0}
+  .body.hide-sidebar #sidebarPane>:not(.pane-tog),
+  .body.hide-list #listPane>:not(.pane-tog),
+  .body.hide-detail #detailPane>:not(.pane-tog){display:none}
+  .body.hide-sidebar #sidebarPane .pane-tog,
+  .body.hide-list #listPane .pane-tog,
+  .body.hide-detail #detailPane .pane-tog{right:auto;left:50%;transform:translateX(-50%)}
   /* Sidebar — frosted glass */
-  .sidebar{width:206px;flex-shrink:0;overflow-y:auto;padding:10px 9px;
+  .sidebar{width:206px;flex-shrink:0;position:relative;display:flex;flex-direction:column;
     background:linear-gradient(180deg,var(--glass),var(--glass-2));
     -webkit-backdrop-filter:blur(22px) saturate(150%);backdrop-filter:blur(22px) saturate(150%);
     border-right:1px solid var(--glass-border)}
+  .sb-scroll{flex:1;overflow-y:auto;padding:34px 9px 10px}
   .side-label{font-size:10px;text-transform:uppercase;letter-spacing:.1em;color:var(--muted);
     font-weight:700;padding:8px 12px 8px}
   .tnav{display:flex;align-items:center;gap:9px;padding:9px 10px;border-radius:10px;cursor:pointer;
@@ -69,8 +84,8 @@
   .tnav .ct{font-size:11px;color:var(--muted);background:rgba(var(--accent-rgb),.09);padding:1px 8px;border-radius:20px;font-weight:600}
   .tnav.active .ct{color:var(--accent);background:rgba(var(--accent-rgb),.16)}
   /* List */
-  .list-col{width:340px;flex-shrink:0;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--panel)}
-  .search{padding:11px 13px;border-bottom:1px solid var(--border);position:relative}
+  .list-col{width:340px;flex-shrink:0;position:relative;border-right:1px solid var(--border);display:flex;flex-direction:column;background:var(--panel)}
+  .search{padding:11px 44px 11px 13px;border-bottom:1px solid var(--border);position:relative}
   .search input{width:100%;padding:9px 12px 9px 33px;border:1px solid var(--border);border-radius:9px;
     background:var(--bg);color:var(--text);font:inherit;outline:none}
   .search input:focus{border-color:var(--accent);box-shadow:0 0 0 3px var(--accent-soft)}
@@ -88,7 +103,7 @@
   .item .sc{font-size:12px;color:var(--muted);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .nomatch{padding:40px 20px;text-align:center;color:var(--muted)}
   /* Detail */
-  .detail-col{flex:1;overflow-y:auto;padding:28px 36px}
+  .detail-col{flex:1;position:relative;overflow-y:auto;padding:28px 36px}
   .empty-detail{height:100%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:var(--muted);text-align:center;gap:8px}
   .empty-detail .big{font-size:40px;opacity:.5}
   .card{max-width:760px;margin:0 auto}
@@ -181,25 +196,26 @@
       <div class="sub" id="subhead">Relationship, campaign & communications vault</div>
     </div>
     <div class="spacer"></div>
-    <button class="navbtn" id="togSidebar" title="Hide / show the sidebar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="9" y1="4" x2="9" y2="20"/></svg></button>
-    <button class="navbtn" id="togList" title="Hide / show the list"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="4" y1="7" x2="20" y2="7"/><line x1="4" y1="12" x2="20" y2="12"/><line x1="4" y1="17" x2="20" y2="17"/></svg></button>
-    <button class="navbtn" id="togDetail" title="Hide / show the detail pane"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="16" rx="2"/><line x1="15" y1="4" x2="15" y2="20"/></svg></button>
-    <span class="navsep"></span>
     <button class="navbtn" id="homeBtn" title="Home — back to the start">⌂</button>
     <button class="navbtn" id="refreshBtn" title="Refresh — rebuild from the vault and reload" style="display:none">↻</button>
     <button class="navbtn" id="backBtn" title="Back">‹</button>
     <button class="navbtn" id="fwdBtn" title="Forward">›</button>
   </header>
   <div class="body">
-    <nav class="sidebar" id="sidebar"></nav>
-    <div class="list-col">
+    <nav class="sidebar" id="sidebarPane">
+      <button class="pane-tog" id="togSidebar" type="button" title="Hide the sidebar" aria-label="Hide the sidebar">‹</button>
+      <div class="sb-scroll" id="sidebar"></div>
+    </nav>
+    <div class="list-col" id="listPane">
+      <button class="pane-tog" id="togList" type="button" title="Hide the list" aria-label="Hide the list">‹</button>
       <div class="search">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
         <input id="q" type="search" placeholder="Search…" autocomplete="off" />
       </div>
       <div class="list" id="list"></div>
     </div>
-    <div class="detail-col">
+    <div class="detail-col" id="detailPane">
+      <button class="pane-tog" id="togDetail" type="button" title="Hide the detail pane" aria-label="Hide the detail pane">‹</button>
       <div id="detail">
         <div class="empty-detail"><div class="big">📚</div><div>Select an entity to view its record</div></div>
       </div>
@@ -572,8 +588,10 @@ function openEntity(id,opts){
 // ── Ask the Wiki (AI chat via local server) ──────────────────
 function enterAsk(){
   mode='ask'; curId=null;
-  // Ask renders in the detail pane — make sure it's visible
-  if(typeof bodyEl!=='undefined'&&bodyEl){bodyEl.classList.remove('hide-detail');const td=el('togDetail');if(td)td.classList.remove('on');}
+  // Ask renders in the detail pane — force it visible and reset its toggle,
+  // then hide that toggle (folding the detail pane would hide the chat).
+  if(typeof bodyEl!=='undefined'&&bodyEl)bodyEl.classList.remove('hide-detail');
+  {const td=el('togDetail');if(td){td.textContent='‹';td.title='Hide the detail pane';td.setAttribute('aria-label',td.title);td.style.display='none';}}
   document.querySelector('.list-col').style.display='none';
   detailEl.parentElement.classList.add('ask-mode');
   renderSidebar();
@@ -584,6 +602,7 @@ function exitAsk(){
   mode='browse';
   document.querySelector('.list-col').style.display='';
   detailEl.parentElement.classList.remove('ask-mode');
+  {const td=el('togDetail');if(td)td.style.display='';}
   renderSidebar();
 }
 const SUGGESTIONS=['What have we done with Panasonic?','Who do we know at Visa?','Tell me about the Coca-Cola Company','Which people work at Lazada?'];
@@ -676,10 +695,18 @@ function goHome(){
 }
 el('homeBtn').onclick=goHome;
 
-// Pane hide/show — each toggle collapses/restores its pane independently. Panes are
-// only display:none'd, so selection, scroll and search state are preserved.
+// Pane hide/show — each pane's own top-right control collapses it to a thin rail
+// and restores it. Panes are only collapsed (kept in the DOM), so selection,
+// scroll and search state are preserved. Glyph points the way the pane folds.
 const bodyEl=document.querySelector('.body');
-function paneToggle(name,btn){const hidden=bodyEl.classList.toggle('hide-'+name);btn.classList.toggle('on',hidden);}
+const PANE_META={sidebar:['‹','›','sidebar'],list:['‹','›','list'],detail:['‹','›','detail pane']};
+function paneToggle(name,btn){
+  const hidden=bodyEl.classList.toggle('hide-'+name);
+  const m=PANE_META[name];
+  btn.textContent=hidden?m[1]:m[0];
+  btn.title=(hidden?'Show the ':'Hide the ')+m[2];
+  btn.setAttribute('aria-label',btn.title);
+}
 el('togSidebar').onclick=()=>paneToggle('sidebar',el('togSidebar'));
 el('togList').onclick=()=>paneToggle('list',el('togList'));
 el('togDetail').onclick=()=>paneToggle('detail',el('togDetail'));

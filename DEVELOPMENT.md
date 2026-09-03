@@ -32,7 +32,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- Claude Code — front end: move each Wiki Browser **pane hide/show** control from the shared header bar to the **top-right of its own pane** (`.sidebar`, `.list-col`, `.detail-col`). Keep independent hide/restore without losing state. Touch `scripts/wiki-browser/template_wiki.html` and rebuild tracked `Apps/wiki-browser.html` if the shell changes. Do not invent Features. Do not commit gitignored `Apps/wiki-data.js` or person notes. Do not push to `main`. Finish in one PR with work, clear this Now line, and one Done line (Policy 11).
+- (none)
 
 ## Next
 
@@ -43,6 +43,7 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
+- 2026-09-03 SGT — implement — Claude Code — moved each Wiki Browser pane hide/show control out of the shared header and onto the top-right corner of its own pane (sidebar, list, detail); a toggle now collapses its pane to a thin rail (content kept in the DOM, so selection/scroll/search state survive) and the same button restores it — all three independent; the glyph reads consistently (‹ folds away, › restores); Ask mode force-shows the detail pane and hides its toggle, restored on exit; rebuilt tracked `Apps/wiki-browser.html`
 - 2026-09-03 SGT — implement — Claude Code — hardened To Enhance and Refresh so a non-JSON (HTML) response is never parsed as JSON (no more `Unexpected token '<'` / DOCTYPE): added a `/whoami` identity endpoint to `ask_server.py` (app=wiki) and `directory_server.py` (app=people-directory); both clients now confirm they are served by their own launcher before POSTing `/rebuild` or `/set-to-enhance`, refuse to parse non-JSON bodies, proactively hide Refresh when not launcher-served, and show a clear "re-open via Ask the Wiki.command / People Directory.command" message instead; rebuilt tracked `Apps/wiki-browser.html`
 - 2026-09-03 SGT — implement — Claude Code — added three panel-icon pane toggles (sidebar / list / detail) in the Wiki Browser header; each independently hides & restores its pane via a body class (display:none only, so selection/scroll/search state is preserved); Ask auto-restores the detail pane if it was hidden
 - 2026-09-03 SGT — implement — Claude Code — added a Home control (header ⌂ button) to both apps that returns to the landing view: exits Ask, clears the selected person/detail, resets search/history, and scrolls to top
