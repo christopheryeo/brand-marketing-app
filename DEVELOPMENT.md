@@ -32,7 +32,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- Claude Code — front end: add a **Home** control on Wiki Browser and People Directory that returns the user to the top of the app shell (scroll to top and clear any open person/detail/Ask overlay so the landing view is back). Touch `scripts/wiki-browser/template_wiki.html`, `scripts/people-directory/template.html`, rebuild tracked `Apps/wiki-browser.html` if the shell changes, and servers only if required for the control. Do not invent Features. Do not commit gitignored `Apps/people-directory.html`, `Apps/wiki-data.js`, or person notes. Do not push to `main`. Finish in one PR with work, clear this Now line, and one Done line (Policy 11).
+- (none)
 
 ## Next
 
@@ -43,6 +43,7 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
+- 2026-09-03 SGT — implement — Claude Code — added a Home control (header ⌂ button) to both apps that returns to the landing view: exits Ask, clears the selected person/detail, resets search/history, and scrolls to top
 - 2026-09-03 SGT — implement — Claude Code — branded both app headers with the Influential Brands wordmark (data-URI logo badge) and renamed the Wiki Browser title/heading to “Influential Brands Knowledge”; out-of-band of Now (direct Christopher request), recorded here via [PR #39](https://github.com/christopheryeo/brand-marketing-app/pull/39)
 - 2026-09-02 SGT — implement — Claude Code — Ask answers now render as readable formatted text (headings, bullet/numbered lists, bold, inline code) instead of raw markdown via a new mdToHtml in formatAnswer; renamed the Ask label/heading/placeholder to "Ask me something"; source chips unchanged
 - 2026-09-02 SGT — wiki — ChatGPT Codex — added an Apollo.io-first Person enrichment runner with Clay and LinkedIn fallbacks that receive prior-provider identifiers, records only the provider that completes a minimum useful profile, clears ToEnhance only on success, and writes an explicit not-found status when all configured providers miss

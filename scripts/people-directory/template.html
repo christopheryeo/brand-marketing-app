@@ -103,6 +103,7 @@
       <div class="sub">Knowledge Wiki · People entities</div>
     </div>
     <div class="spacer"></div>
+    <button class="refreshbtn" id="homeBtn" title="Home — back to the start">⌂ Home</button>
     <button class="refreshbtn" id="refreshBtn" title="Rebuild from the vault and reload" style="display:none">↻ Refresh</button>
     <div class="count"><span id="countN">__COUNT__</span> people</div>
   </header>
@@ -317,6 +318,14 @@ function applyFilter(){
   });
   renderList(filtered);
 }
+
+// Home: return to the landing view — clear selection/search and scroll to top
+function goHome(){
+  activeId=null; qEl.value=''; renderList(PEOPLE);
+  detailEl.innerHTML='<div class="empty-detail"><div class="big">👤</div><div>Select a person to view their record</div></div>';
+  detailEl.parentElement.scrollTop=0; listEl.scrollTop=0;
+}
+document.getElementById('homeBtn').onclick=goHome;
 
 qEl.addEventListener('input', applyFilter);
 renderList(PEOPLE);

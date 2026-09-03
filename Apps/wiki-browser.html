@@ -175,6 +175,7 @@
       <div class="sub" id="subhead">Relationship, campaign & communications vault</div>
     </div>
     <div class="spacer"></div>
+    <button class="navbtn" id="homeBtn" title="Home — back to the start">⌂</button>
     <button class="navbtn" id="refreshBtn" title="Refresh — rebuild from the vault and reload" style="display:none">↻</button>
     <button class="navbtn" id="backBtn" title="Back">‹</button>
     <button class="navbtn" id="fwdBtn" title="Forward">›</button>
@@ -610,6 +611,16 @@ el('fwdBtn').onclick=()=>{if(!histFwd.length)return;histBack.push({type:curType,
 function goto(s){curId=s.id;if(curType!==s.type){curType=s.type;qEl.value='';renderSidebar();renderList();}highlightList(s.id);renderDetail(s.id);updateNav();}
 
 qEl.addEventListener('input',()=>{renderList();});
+
+// Home: return to the landing view — exit Ask, clear selection/search/history, scroll to top
+function goHome(){
+  if(mode==='ask') exitAsk();
+  curType=TYPES[0].key; curId=null; qEl.value=''; histBack=[]; histFwd=[];
+  renderSidebar(); renderList();
+  detailEl.innerHTML='<div class="empty-detail"><div class="big">📚</div><div>Select an entity to view its record</div></div>';
+  detailEl.parentElement.scrollTop=0; listEl.scrollTop=0; updateNav();
+}
+el('homeBtn').onclick=goHome;
 
 // init
 curType=TYPES[0].key;
