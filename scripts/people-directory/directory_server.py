@@ -51,6 +51,10 @@ class Handler(BaseHTTPRequestHandler):
                 self._send(200, HTML_PATH.read_bytes(), "text/html; charset=utf-8")
             except FileNotFoundError:
                 self._send(404, "people-directory.html not found — run build_people_directory.py first.", "text/plain")
+        elif route == "/whoami":
+            # Identity probe: lets the page confirm it is served by THIS launcher
+            # (right app + port) before it POSTs /rebuild or /set-to-enhance.
+            self._send(200, json.dumps({"status": "ok", "app": "people-directory", "port": PORT}))
         elif route == "/to-enhance-state":
             pid = (parse_qs(urlparse(self.path).query).get("id") or [""])[0]
             try:
