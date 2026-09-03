@@ -32,6 +32,8 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
+- Claude Code — front end: Ask the Wiki response UI must stop showing raw markdown — fix/extend `formatAnswer` in `scripts/wiki-browser/template_wiki.html` so answers render as clear readable formatted text (headings, lists, emphasis) instead of dumping markdown source. Rename the Ask Wiki label/placeholder to **Ask me something**. Touch `scripts/wiki-browser/template_wiki.html`, `scripts/wiki-browser/ask_server.py` only if the server must change response shape, and the tracked `Apps/wiki-browser.html` shell if it changes. Do not invent Features. Do not commit gitignored `Apps/wiki-data.js` or person notes. Do not push to `main`. Finish in one PR with work, clear this Now line, and one Done line (Policy 11).
+
 ## Next
 
 - (none)
