@@ -299,6 +299,10 @@ class Handler(BaseHTTPRequestHandler):
                     self._send(200, f.read(), "application/javascript; charset=utf-8")
             except FileNotFoundError:
                 self._send(404, "wiki-data.js not found — run build_wiki.py first.", "text/plain")
+        elif self.path == "/whoami":
+            # Identity probe: lets the page confirm it is served by THIS launcher
+            # (right app + port) before it POSTs /rebuild or /set-to-enhance.
+            self._send(200, json.dumps({"status": "ok", "app": "wiki", "port": PORT}))
         elif self.path.startswith("/to-enhance-state"):
             from urllib.parse import urlparse, parse_qs
             pid = (parse_qs(urlparse(self.path).query).get("id") or [""])[0]

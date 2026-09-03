@@ -281,21 +281,64 @@ function enrichedProfileBlock(n){
     (hist?`<div class="section-label" style="margin-top:14px">Professional history</div>${hist}`:'');
 }
 // --- Editable "To Enhance" checkbox (persists to the vault via the local server) ---
+// The edit/refresh actions only work when this page is served by its own launcher
+// ("Ask the Wiki.command", the ask-server on :8765). Opened as a file, or hit on
+// the wrong host/port, those endpoints don't exist and the server replies with an
+// HTML document — so we must never blindly JSON.parse a response. We (a) confirm
+// the server identity before any mutating POST and (b) refuse to parse a non-JSON
+// body, showing a clear "open via the launcher" message instead of a cryptic
+// "Unexpected token '<'".
 const CAN_EDIT = location.protocol==='http:'||location.protocol==='https:';
+const EXPECT_APP='wiki';
+const LAUNCH_MSG='This page isn’t being served by “Ask the Wiki.command”. Re-open it from that launcher to edit or refresh.';
+// Parse a Response as JSON only when it really is JSON; an HTML body (a 404 page,
+// a directory listing, the page itself) means we reached the wrong server.
+async function readJSON(r){
+  const ct=(r.headers.get('content-type')||'').toLowerCase();
+  if(!ct.includes('application/json')) throw new Error(LAUNCH_MSG);
+  return r.json();
+}
+// Confirm this is the wiki launcher (right app, live server). Probed once, cached.
+let _served=null;
+function ensureServed(){
+  if(_served) return _served;
+  _served=(async()=>{
+    if(!CAN_EDIT) throw new Error(LAUNCH_MSG);
+    let r; try{ r=await fetch('/whoami',{headers:{'Accept':'application/json'}}); }
+    catch(_){ throw new Error(LAUNCH_MSG); }
+    if(!r.ok) throw new Error(LAUNCH_MSG);
+    let j; try{ j=await readJSON(r); }catch(_){ throw new Error(LAUNCH_MSG); }
+    if(!j||j.app!==EXPECT_APP) throw new Error(LAUNCH_MSG);
+    return true;
+  })().catch(err=>{ _served=null; throw err; });
+  return _served;
+}
+// POST JSON to a launcher endpoint — gated on identity, validated on the way back.
+async function postJSON(path,body){
+  await ensureServed();
+  const r=await fetch(path,{method:'POST',headers:{'Content-Type':'application/json'},
+    body:(body===undefined||body===null)?undefined:JSON.stringify(body)});
+  if(!r.ok){ let j=null; try{ j=await readJSON(r); }catch(_){}
+    throw new Error((j&&j.error)||('Request failed ('+r.status+')')); }
+  return readJSON(r);
+}
 // Refresh: ask the local server to rebuild wiki data from the vault, then reload
 async function doRefresh(btn){
   btn.disabled=true; const old=btn.textContent; btn.textContent='…';
   try{
-    const r=await fetch('/rebuild',{method:'POST'});
-    const j=await r.json();
+    const j=await postJSON('/rebuild');
     if(j.status!=='ok') throw new Error(j.error||'rebuild failed');
     location.reload();
   }catch(e){
     btn.disabled=false; btn.textContent=old;
-    alert('Refresh failed: '+e.message+'\nMake sure you opened this via “Ask the Wiki.command”.');
+    alert('Refresh failed: '+e.message);
   }
 }
-(function(){const rb=document.getElementById('refreshBtn'); if(rb&&CAN_EDIT){rb.style.display=''; rb.onclick=()=>doRefresh(rb);}})();
+(function(){const rb=document.getElementById('refreshBtn');
+  if(rb&&CAN_EDIT){ rb.style.display=''; rb.onclick=()=>doRefresh(rb);
+    // Proactively hide Refresh when we aren't actually served by the launcher.
+    ensureServed().catch(()=>{ rb.style.display='none'; }); }
+})();
 function toEnhanceControl(id,v){
   const checked=v===true?' checked':'';
   const dis=CAN_EDIT?'':' disabled';
@@ -306,13 +349,12 @@ async function toggleToEnhance(cb){
   const id=cb.getAttribute('data-teid'),value=cb.checked;
   cb.disabled=true;
   try{
-    const r=await fetch('/set-to-enhance',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({id,value})});
-    const j=await r.json();
+    const j=await postJSON('/set-to-enhance',{id,value});
     if(j.status!=='ok')throw new Error(j.error||'save failed');
     if(NODES[id]&&NODES[id].f)NODES[id].f.ToEnhance=value;
   }catch(e){
     cb.checked=!value;
-    alert('Could not save “To Enhance”: '+e.message+'\nMake sure you opened this via “Ask the Wiki.command”.');
+    alert('Could not save “To Enhance”: '+e.message);
   }finally{cb.disabled=false;}
 }
 function fmtVal(k,v){
@@ -497,7 +539,7 @@ function renderDetail(id){
   });
   detailEl.parentElement.scrollTop=0;
   if(CAN_EDIT&&isPerson(n.t)){
-    fetch('/to-enhance-state?id='+encodeURIComponent(id)).then(r=>r.json()).then(j=>{
+    fetch('/to-enhance-state?id='+encodeURIComponent(id)).then(readJSON).then(j=>{
       if(!j||j.status!=='ok')return;
       const cb=detailEl.querySelector('input[type=checkbox][data-teid]');
       if(cb&&cb.getAttribute('data-teid')===id){

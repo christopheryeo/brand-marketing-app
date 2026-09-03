@@ -32,8 +32,6 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- Claude Code — front end + local servers: fix **To Enhance** and **Refresh** so they never treat an HTML document as JSON (`Unexpected token '<'` / DOCTYPE). Both Wiki Browser (ask server, default port `8765`) and People Directory (directory server, default port `8766`) must POST `/set-to-enhance` and `/rebuild` only when served by their launcher; if the page was opened as a file or hit the wrong host/port, show a clear “open via Ask the Wiki.command / People Directory.command” error instead of parsing HTML. Harden `scripts/wiki-browser/ask_server.py`, `scripts/people-directory/directory_server.py`, and the client fetch paths in `scripts/wiki-browser/template_wiki.html` / `scripts/people-directory/template.html` (rebuild tracked `Apps/wiki-browser.html` if needed). Do not invent Features. Do not commit gitignored builds or person notes. Do not push to `main`. Finish in one PR with work, clear this Now line, and one Done line (Policy 11).
-
 ## Next
 
 - Claude Code — front end: move each Wiki Browser **pane hide/show** control from the shared header bar to the **top-right of its own pane** (`.sidebar`, `.list-col`, `.detail-col`). Keep independent hide/restore without losing state. Touch `scripts/wiki-browser/template_wiki.html` and rebuild tracked `Apps/wiki-browser.html` if the shell changes. Do not invent Features. Do not commit gitignored `Apps/wiki-data.js` or person notes. Do not push to `main`. Finish in one PR with work, clear Now, and one Done line (Policy 11) when promoted.
@@ -43,6 +41,7 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
+- 2026-09-03 SGT — implement — Claude Code — hardened To Enhance and Refresh so a non-JSON (HTML) response is never parsed as JSON (no more `Unexpected token '<'` / DOCTYPE): added a `/whoami` identity endpoint to `ask_server.py` (app=wiki) and `directory_server.py` (app=people-directory); both clients now confirm they are served by their own launcher before POSTing `/rebuild` or `/set-to-enhance`, refuse to parse non-JSON bodies, proactively hide Refresh when not launcher-served, and show a clear "re-open via Ask the Wiki.command / People Directory.command" message instead; rebuilt tracked `Apps/wiki-browser.html`
 - 2026-09-03 SGT — implement — Claude Code — added three panel-icon pane toggles (sidebar / list / detail) in the Wiki Browser header; each independently hides & restores its pane via a body class (display:none only, so selection/scroll/search state is preserved); Ask auto-restores the detail pane if it was hidden
 - 2026-09-03 SGT — implement — Claude Code — added a Home control (header ⌂ button) to both apps that returns to the landing view: exits Ask, clears the selected person/detail, resets search/history, and scrolls to top
 - 2026-09-03 SGT — implement — Claude Code — branded both app headers with the Influential Brands wordmark (data-URI logo badge) and renamed the Wiki Browser title/heading to “Influential Brands Knowledge”; out-of-band of Now (direct Christopher request), recorded here via [PR #39](https://github.com/christopheryeo/brand-marketing-app/pull/39)
