@@ -142,7 +142,10 @@
   .msg.user{align-self:flex-end;background:var(--accent);color:#fff;padding:9px 14px;border-radius:15px 15px 4px 15px}
   .msg.bot{align-self:flex-start;background:var(--panel);border:1px solid var(--border);padding:13px 17px;
     border-radius:15px 15px 15px 4px;box-shadow:var(--shadow);width:100%}
-  .msg.bot p{margin:8px 0}.msg.bot p:first-child{margin-top:0}.msg.bot b{font-weight:650}
+  .msg.bot p{margin:8px 0}.msg.bot p:first-child{margin-top:0}.msg.bot b,.msg.bot strong{font-weight:650}
+  .msg.bot h4,.msg.bot h5,.msg.bot h6{font-size:13.5px;font-weight:650;margin:11px 0 4px}.msg.bot h4:first-child,.msg.bot h5:first-child,.msg.bot h6:first-child{margin-top:0}
+  .msg.bot ul,.msg.bot ol{margin:6px 0;padding-left:20px}.msg.bot li{margin:3px 0}
+  .msg.bot code{background:var(--chip);padding:1px 5px;border-radius:5px;font-size:12.5px;font-family:ui-monospace,SFMono-Regular,Menlo,monospace}
   .suggests{display:flex;flex-wrap:wrap;gap:8px;align-content:flex-start}
   .suggest{font-size:12.5px;padding:7px 12px;border:1px solid var(--border);border-radius:20px;background:var(--panel);cursor:pointer;color:var(--text)}
   .suggest:hover{border-color:var(--accent);color:var(--accent);background:var(--accent-soft)}
@@ -325,8 +328,8 @@ function renderSidebar(){
   sidebarEl.innerHTML='';
   const ask=document.createElement('div');
   ask.className='tnav ask'+(mode==='ask'?' active':'');
-  ask.title='Ask the wiki a natural-language question';
-  ask.innerHTML='<span class="ic">💬</span><span class="lb">Ask the Wiki</span>';
+  ask.title='Ask me something — a natural-language question about the vault';
+  ask.innerHTML='<span class="ic">💬</span><span class="lb">Ask me something</span>';
   ask.onclick=()=>enterAsk();
   sidebarEl.appendChild(ask);
   const lbl=document.createElement('div'); lbl.className='side-label'; lbl.textContent='Entities';
@@ -531,9 +534,9 @@ function exitAsk(){
 const SUGGESTIONS=['What have we done with Panasonic?','Who do we know at Visa?','Tell me about the Coca-Cola Company','Which people work at Lazada?'];
 function renderChat(){
   detailEl.innerHTML=`<div class="ask-wrap">
-    <div class="ask-top"><h2>💬 Ask the Wiki</h2><p>AI answers grounded strictly in this vault's ${Object.keys(NODES).length.toLocaleString()} records. Every answer links back into the wiki.</p></div>
+    <div class="ask-top"><h2>💬 Ask me something</h2><p>AI answers grounded strictly in this vault's ${Object.keys(NODES).length.toLocaleString()} records. Every answer links back into the wiki.</p></div>
     <div class="chat" id="chat"></div>
-    <div class="ask-input"><input id="askq" placeholder="Ask about a company, person or brand…" autocomplete="off"/><button id="asksend">Ask</button></div>
+    <div class="ask-input"><input id="askq" placeholder="Ask me something about a company, person or brand…" autocomplete="off"/><button id="asksend">Ask</button></div>
   </div>`;
   const chat=el('chat');
   if(!convo.length){
@@ -566,12 +569,38 @@ async function submitAsk(text){
   }
   renderChat();
 }
+// Render the model's markdown answer as readable HTML. Input is HTML-escaped first,
+// so the only tags introduced are our own — safe from injection.
+function mdInline(s){
+  s=s.replace(/\*\*([^*]+)\*\*/g,'<strong>$1</strong>');
+  s=s.replace(/__([^_]+)__/g,'<strong>$1</strong>');
+  s=s.replace(/(^|[^*])\*([^*\n]+)\*(?!\*)/g,'$1<em>$2</em>');
+  s=s.replace(/`([^`]+)`/g,'<code>$1</code>');
+  return s;
+}
+function mdToHtml(text){
+  const lines=String(text).split('\n'); let html=''; let i=0;
+  const blank=l=>/^\s*$/.test(l), head=l=>/^\s*#{1,6}\s+/.test(l),
+        ul=l=>/^\s*[-*]\s+/.test(l), ol=l=>/^\s*\d+\.\s+/.test(l);
+  while(i<lines.length){
+    const line=lines[i];
+    if(blank(line)){i++;continue;}
+    const hm=/^\s*(#{1,6})\s+(.*)$/.exec(line);
+    if(hm){const lvl=Math.min(hm[1].length+3,6);html+=`<h${lvl}>${mdInline(hm[2].trim())}</h${lvl}>`;i++;continue;}
+    if(ul(line)){html+='<ul>';while(i<lines.length&&ul(lines[i])){html+=`<li>${mdInline(lines[i].replace(/^\s*[-*]\s+/,''))}</li>`;i++;}html+='</ul>';continue;}
+    if(ol(line)){html+='<ol>';while(i<lines.length&&ol(lines[i])){html+=`<li>${mdInline(lines[i].replace(/^\s*\d+\.\s+/,''))}</li>`;i++;}html+='</ol>';continue;}
+    const para=[];
+    while(i<lines.length&&!blank(lines[i])&&!head(lines[i])&&!ul(lines[i])&&!ol(lines[i])){para.push(lines[i]);i++;}
+    html+=`<p>${mdInline(para.join('\n')).replace(/\n/g,'<br>')}</p>`;
+  }
+  return html||'<p>(no answer)</p>';
+}
 function formatAnswer(data){
-  const ans=esc(data.answer||'(no answer)');
-  let h=`<p>${ans.replace(/\n\n+/g,'</p><p>').replace(/\n/g,'<br>')}</p>`;
+  let h=mdToHtml(esc(data.answer||'(no answer)'));
   if(data.sources&&data.sources.length){
-    const chips=data.sources.filter(s=>NODES[s.id]).map(s=>linkChip(s.id)).join('');
-    if(chips) h+=`<div class="ans-sec"><div class="ans-h">Sources (${data.sources.filter(s=>NODES[s.id]).length})</div><div class="chips">${chips}</div></div>`;
+    const shown=data.sources.filter(s=>NODES[s.id]);
+    const chips=shown.map(s=>linkChip(s.id)).join('');
+    if(chips) h+=`<div class="ans-sec"><div class="ans-h">Sources (${shown.length})</div><div class="chips">${chips}</div></div>`;
   }
   return h;
 }
