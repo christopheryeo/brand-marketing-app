@@ -36,7 +36,7 @@ Format: tool — surface — files it may touch — files it must not touch — 
 
 ## Next
 
-- (none)
+- Claude Code — front end: on Wiki Browser (three panes: sidebar, list, detail), add a **hide/show control for each pane** so the user can collapse or restore any pane independently without losing state. Touch `scripts/wiki-browser/template_wiki.html` (and rebuild tracked `Apps/wiki-browser.html` if the shell changes). Do not invent Features. Do not commit gitignored `Apps/wiki-data.js` or person notes. Do not push to `main`. Finish in one PR with work, clear Now, and one Done line (Policy 11) when promoted.
 
 
 ## Done
