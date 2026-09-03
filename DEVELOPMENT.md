@@ -32,7 +32,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- (none)
+- Claude Code — front end: add a **Home** control on Wiki Browser and People Directory that returns the user to the top of the app shell (scroll to top and clear any open person/detail/Ask overlay so the landing view is back). Touch `scripts/wiki-browser/template_wiki.html`, `scripts/people-directory/template.html`, rebuild tracked `Apps/wiki-browser.html` if the shell changes, and servers only if required for the control. Do not invent Features. Do not commit gitignored `Apps/people-directory.html`, `Apps/wiki-data.js`, or person notes. Do not push to `main`. Finish in one PR with work, clear this Now line, and one Done line (Policy 11).
 
 ## Next
 
