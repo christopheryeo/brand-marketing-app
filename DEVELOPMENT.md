@@ -32,7 +32,7 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- (none)
+- Claude Code — hosted: first Demo 2 work item — get Brand Marketing App deployed on **Vercel** from `christopheryeo/brand-marketing-app`, following `docs/hosted-wiki-auth-plan.md` (Next.js app from GitHub → Vercel). Deliver a working Vercel deployment URL (Preview or Production as Christopher chooses) and the tracked repo changes needed to deploy (e.g. Next.js app scaffold / vercel config / README deploy notes). Do **not** build Admin invite UI (C2/C3) or invent Features beyond what ships with this deploy. Do **not** commit secrets, `.env*`, Dropbox tokens, or gitignored vault builds. Human owner of the Vercel account and project link is **Christopher** (chris@sentient.io) — Claude Code prepares the code and PR; Christopher creates/approves the Vercel project and any required env. Do not push to `main`. Finish in one PR with work, clear this Now line, and one Done line (Policy 11).
 
 ## Next
 
