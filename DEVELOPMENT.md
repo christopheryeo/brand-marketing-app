@@ -2,6 +2,8 @@
 
 Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). This is not the wiki constitution. Wiki rules stay in `AGENTS.md`. Shipped features stay in the Features section of `../../Alex (Dev)/Knowledge/Product Inventory.md`. Human-blocked work stays on Owen’s ClickUp.
 
+Process map (who/what/where): `docs/development-process.md`.
+
 ## Roles
 
 **Grok Bot (Felix).** Updates Now and Next. Writes each Now line as a short prompt the named tool can follow. After a merged PR, writes a Features line only for a user-facing capability he can name. Does not copy every PR. Does not implement the front-end or the vault.
@@ -32,17 +34,20 @@ Handoff file for Brand Marketing App (`christopheryeo/brand-marketing-app`). Thi
 
 Format: tool — surface — files it may touch — files it must not touch — git — link
 
-- Claude Code — hosted: first Demo 2 work item — get Brand Marketing App deployed on **Vercel** from `christopheryeo/brand-marketing-app`, following `docs/hosted-wiki-auth-plan.md` (Next.js app from GitHub → Vercel). Deliver a working Vercel deployment URL (Preview or Production as Christopher chooses) and the tracked repo changes needed to deploy (e.g. Next.js app scaffold / vercel config / README deploy notes). Do **not** build Admin invite UI (C2/C3) or invent Features beyond what ships with this deploy. Do **not** commit secrets, `.env*`, Dropbox tokens, or gitignored vault builds. Human owner of the Vercel account and project link is **Christopher** (chris@sentient.io) — Claude Code prepares the code and PR; Christopher creates/approves the Vercel project and any required env. Do not push to `main`. Finish in one PR with work, clear this Now line, and one Done line (Policy 11).
+- (none)
+
 
 ## Next
 
-- (none)
+- Claude Code — hosted: first Demo 2 work item — get Brand Marketing App deployed on **Vercel** from `christopheryeo/brand-marketing-app`, following `docs/hosted-wiki-auth-plan.md` (Next.js app from GitHub → Vercel). Deliver a working Vercel deployment URL (Preview or Production as Christopher chooses) and the tracked repo changes needed to deploy (e.g. Next.js app scaffold / vercel config / README deploy notes). Do **not** build Admin invite UI (C2/C3) or invent Features beyond what ships with this deploy. Do **not** commit secrets, `.env*`, Dropbox tokens, or gitignored vault builds. Human owner of the Vercel account and project link is **Christopher** (chris@sentient.io) — Claude Code prepares the code and PR; Christopher creates/approves the Vercel project and any required env. Do not push to `main`. Finish in one PR with work, clear this Now line, and one Done line (Policy 11).
+
 
 
 ## Done
 
 Format: `YYYY-MM-DD SGT — implement|wiki|maintenance — who — what`
 
+- 2026-09-14 SGT — implement — Claude Code — drafted `campaign/SPEC.md` for the Campaign-Send Agent from the Drive build plan: the six Actions with a confirmation checklist (Action 7 noted as dropped), an open-questions checklist, a blank Sending-authority section (named-user vs shared mailbox + who-may-trigger table), and an Integrations section (outbound/inbound = native Gmail; Zoom flagged as the one approval item or Google Meet fallback; database-agent = internal). Docs only; no Action/send code, no Apps UI, no vault notes touched.
 - 2026-09-03 SGT — implement — Claude Code — moved each Wiki Browser pane hide/show control out of the shared header and onto the top-right corner of its own pane (sidebar, list, detail); a toggle now collapses its pane to a thin rail (content kept in the DOM, so selection/scroll/search state survive) and the same button restores it — all three independent; the glyph reads consistently (‹ folds away, › restores); Ask mode force-shows the detail pane and hides its toggle, restored on exit; rebuilt tracked `Apps/wiki-browser.html`
 - 2026-09-03 SGT — implement — Claude Code — hardened To Enhance and Refresh so a non-JSON (HTML) response is never parsed as JSON (no more `Unexpected token '<'` / DOCTYPE): added a `/whoami` identity endpoint to `ask_server.py` (app=wiki) and `directory_server.py` (app=people-directory); both clients now confirm they are served by their own launcher before POSTing `/rebuild` or `/set-to-enhance`, refuse to parse non-JSON bodies, proactively hide Refresh when not launcher-served, and show a clear "re-open via Ask the Wiki.command / People Directory.command" message instead; rebuilt tracked `Apps/wiki-browser.html`
 - 2026-09-03 SGT — implement — Claude Code — added three panel-icon pane toggles (sidebar / list / detail) in the Wiki Browser header; each independently hides & restores its pane via a body class (display:none only, so selection/scroll/search state is preserved); Ask auto-restores the detail pane if it was hidden
