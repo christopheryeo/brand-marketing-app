@@ -16,7 +16,7 @@
 
 1. Select the people to email (recipients) from the Knowledge Graph.
 2. Select a **campaign pack** — email header, email body, attachment — where packs are editable, addable, and deletable.
-3. **Enroll** the selected recipients into an **Apollo sequence** (Apollo sends + tracks + does the 1-week follow-up).
+3. **Create an Apollo sequence from the pack** (subject/body/attachment + the 1-week follow-up step) via the Apollo API, then **enroll** the selected recipients into it (Apollo sends + tracks + follows up).
 4. **Consume Apollo's response events** and take one of six Actions.
 
 ---
@@ -38,13 +38,16 @@
 
 ## 3. Resolved questions (Christopher, 15 Sep 2026)
 
-- **Follow-up cadence (Action 1):** exactly **one** follow-up at 1 week — configured as an Apollo sequence step.
+- **Pack → sequence (creation):** the agent **creates the Apollo sequence from the pack** via the API (subject/body/attachment + the 1-week follow-up step), then enrolls recipients into it — packs are not pre-built in Apollo by hand.
+- **Follow-up cadence (Action 1):** exactly **one** follow-up at 1 week — created as the sequence's second step.
 - **"Interested" (Action 2):** classified by LLM (see §5) at **confidence ≥ 0.90 + evidence**; borderline cases go to **human review**, not auto-action.
 - **Zoom/call (Action 2):** **Google Meet** via the native Calendar connector (not Zoom).
 - **Colleague add (Action 3):** add **real individuals only**; skip generic role mailboxes (info@/sales@/support@), matching the vault ingestion rule.
 - **Bounce / left-company (Actions 4/5):** two **separate booleans** — `emailBounced` and `departed` — with history kept in `entities/people/log.md`.
 - **Alternate contact (Action 6):** **auto-enroll** in the Apollo sequence (no manual step).
 - **Recipient eligibility:** a person **may be in multiple campaigns**, but recipient selection **always excludes a suppression / opt-out list**.
+- **Suppression population:** the suppression list is **manual only** — entries are added by an authorised person. Bounces (Action 4) and left-company (Action 5) set their own record flags but do **not** auto-add to suppression.
+- **Action 2 call host:** the Google Meet is hosted on a **shared team calendar** (not an individual's), so any campaign call lands on the same calendar.
 - **Response signals:** read from **Apollo (API/webhook)**, not by monitoring a mailbox.
 - **Timezone:** SGT.
 
@@ -69,7 +72,7 @@
 |---|---|---|
 | **Send / track / follow-up** | **Apollo.io** (sequences) | Apollo API — key in `.env.local` (same pattern as enrichment) |
 | **Response signals** (reply/bounce/auto-reply) | **Apollo API / webhook** → repo Actions | Apollo API |
-| **Call (Action 2)** | **Google Meet** via **native Calendar** connector | ✅ Native |
+| **Call (Action 2)** | **Google Meet** via **native Calendar** connector, hosted on a **shared team calendar** | ✅ Native |
 | **Reply classification** | **LLM — OpenAI `gpt-4o-mini`** (existing app model path) | Native HTTP + `.env.local` key |
 | **Record updates** (Actions 3/4/5) | Internal vault writeback (`record_enrichment` / `set_to_enhance` pattern) | ✅ Internal |
 

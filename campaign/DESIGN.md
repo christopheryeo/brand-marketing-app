@@ -9,7 +9,7 @@
 ## 1. Execution model (confirmed)
 
 - The agent is a **Python module in this repo** that calls the **Apollo API** directly (key in `.env.local`, same pattern as the existing enrichment path and how `ask_server.py` calls OpenAI). No Zapier.
-- **Outbound = Apollo.** We enroll a recipient list into an Apollo sequence; Apollo performs sends, tracking, and the 1-week follow-up (Action 1).
+- **Outbound = Apollo.** We **create the Apollo sequence from the pack** (subject/body/attachment + a 1-week follow-up step) via the API, then enroll the recipient list into it; Apollo performs sends, tracking, and the follow-up (Action 1).
 - **Inbound = Apollo events.** We consume Apollo reply/bounce/status events (webhook receiver or API poll) and fire Actions 2–6.
 - Runs unattended (Apollo owns delivery timing); our side is event-driven + idempotent.
 
@@ -29,7 +29,7 @@ campaign/
   apollo.py               # Apollo API client: enroll, fetch/receive events
   db_agent.py             # vault writeback wrapper (see §7)
   classify.py             # reply classification (see §6)
-  meet.py                 # Google Meet via native Calendar (Action 2)
+  meet.py                 # Google Meet via native Calendar, shared team calendar (Action 2)
   agent.py                # orchestration: enroll → consume events → Actions
   tests/                  # fixtures + dry-run tests
 ```
@@ -42,7 +42,7 @@ campaign/
 - **RecipientList** `{id, name, personIds[], createdAt}` — people **by personId reference only** → **tracked**.
 - **Campaign** `{id, packId, listId, apolloSequenceId, launchedBy, status, recipients:[{personId, email, apolloContactId, state}]}` — resolves addresses at enroll → **gitignored**.
 - **Event** (JSONL) `{campaignId, personId, class, evidence, at}` from Apollo → **gitignored** (PII).
-- **Suppression** list of personIds / email hashes → **gitignored**; recipient selection **always excludes it**.
+- **Suppression** list of personIds / email hashes → **gitignored**; recipient selection **always excludes it**. **Populated manually only** — `db_agent` exposes an `add_suppression(personId, reason)` helper for an authorised person; Actions 4/5 do **not** write to it.
 
 **Gitignore additions:** `campaign/campaigns/`, `campaign/events/`, `campaign/attachments/`, `campaign/suppression.json`. Tracked files carry **no addresses or reply bodies**.
 
@@ -50,9 +50,10 @@ campaign/
 
 ## 4. Apollo integration (replaces the old Gmail send/monitor)
 
-- **Enroll:** `apollo.py` maps each recipient to an Apollo contact (by email; create in Apollo if absent) and adds them to the chosen **sequence**. Sender = the shared mailbox connected in Apollo. Launch is gated to **named authorised users** (§SPEC 4).
+- **Create sequence:** `apollo.py` builds an Apollo sequence from the pack — step 1 = the pack's subject/body/attachment, step 2 = the 1-week follow-up — and returns its `apolloSequenceId`. Created once per launch (or reused if the pack already maps to a live sequence).
+- **Enroll:** `apollo.py` maps each recipient to an Apollo contact (by email; create in Apollo if absent) and adds them to that sequence. Sender = the shared mailbox connected in Apollo. Launch is gated to **named authorised users** (§SPEC 4).
 - **Events in:** prefer an **Apollo webhook** (a small receiver) for reply/bounce/auto-reply/status; fall back to periodic **API poll** if webhooks aren't on the plan. Each event carries the Apollo contact id → map back to `personId`.
-- **DECISION to confirm:** Apollo plan/scope supports (a) sequence enrollment via API and (b) reply/bounce event delivery. If not, revisit.
+- **DECISION to confirm:** Apollo plan/scope supports (a) **sequence creation** + enrollment via API and (b) reply/bounce event delivery. If sequence-create isn't on the API, fall back to referencing a pre-built sequence per pack.
 
 ---
 
@@ -77,6 +78,7 @@ Apollo events reference an **Apollo contact id** and the recipient email. Correl
 - `set_email_bounced(personId)` → `emailBounced: true` (Action 4).
 - `set_departed(personId)` → `departed: true` (Action 5).
 - `add_person(email, displayName, orgId?)` → Action 3 (see §8).
+- `add_suppression(personId, reason)` → append to `suppression.json` (manual only; not called by any Action).
 
 Constraint (Codex lane): writes touch **gitignored person notes**, append **tracked `log.md`**; commit only `log.md`/scripts, never person notes or PII.
 
@@ -105,7 +107,7 @@ Update `schemas/person.schema.json` + schema generation, and backfill existing r
 
 - Source via `query.py` (`tool_list_domain("people")` / `parse_catalog("people")`).
 - **Filters are relationships:** company = `organisationId`, industry = `industryId`, segment = `marketingSegmentId` — graph joins, not flat columns.
-- **Always subtract the suppression list.** Multiple concurrent campaigns are allowed.
+- **Always subtract the suppression list** (manually maintained; see §3/§7). Multiple concurrent campaigns are allowed.
 
 ---
 
@@ -131,7 +133,8 @@ Update `schemas/person.schema.json` + schema generation, and backfill existing r
 
 ## 14. Remaining decisions
 
-1. **Apollo API capability** (§4): confirm the plan supports sequence enrollment + reply/bounce webhooks (or accept API polling).
+1. **Apollo API capability** (§4): confirm the plan supports **sequence creation** + enrollment + reply/bounce webhooks (or accept the fallbacks: pre-built sequence per pack; API polling).
 2. Fill the **authorised-launcher names** (SPEC §4).
+3. Name the **shared team calendar** that hosts Action 2 Meet calls (calendar id for `meet.py`).
 
-All other prior blockers are resolved: platform = Apollo, sender = shared mailbox, classification = gpt-4o-mini, call = Google Meet, field shape = `emailBounced`/`departed`, eligibility = multiple + suppression, signals = Apollo events.
+All other prior blockers are resolved: platform = Apollo, pack→sequence = agent-created via API, sender = shared mailbox, classification = gpt-4o-mini, call = Google Meet on a shared team calendar, field shape = `emailBounced`/`departed`, eligibility = multiple + manual suppression, signals = Apollo events.
