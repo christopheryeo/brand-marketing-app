@@ -31,8 +31,9 @@ campaign/
   classify.py             # reply classification (see §6)
   meet.py                 # Google Meet via native Calendar, shared team calendar (Action 2)
   agent.py                # orchestration: enroll → consume events → Actions
-  tests/                  # fixtures + dry-run tests
 ```
+
+Tests live in the repo's existing **top-level `tests/`** (e.g. `tests/test_record_enrichment.py`, `tests/test_query.py`), not under `campaign/` — new suites go there as `tests/test_campaign_*.py`, with fixtures under `tests/fixtures/`.
 
 ---
 
@@ -107,7 +108,7 @@ Add two **separate booleans** to the Person schema (nullable), like `ToEnhance`/
 - `emailBounced`: `true | false | null`
 - `departed`: `true | false | null`
 
-Update `schemas/person.schema.json` + schema generation, and backfill existing records to `null` (mirror `backfill_to_enhance.py`).
+**Hand-edit** `schemas/person.schema.json` (it is maintained by hand — there is no schema generator; `generate_catalog.py` builds catalogs, not schemas), then backfill existing records to `null` with a new script mirroring `backfill_to_enhance.py`.
 
 ---
 
@@ -134,7 +135,7 @@ Update `schemas/person.schema.json` + schema generation, and backfill existing r
 
 ## 13. Testing
 
-- `campaign/tests/fixtures/` with sample Apollo events (reply/interested, bounce, left-company, on-leave) — no live Apollo calls in CI.
+- `tests/fixtures/` (repo top-level `tests/`, alongside `test_record_enrichment.py`) with sample Apollo events (reply/interested, bounce, left-company, on-leave) — no live Apollo calls in CI.
 - Enrollment tests run in **dry-run** (assert the payload; don't hit Apollo). Vault-write tests use a temp `root` (as `record_enrichment` tests do). Google Meet tested as a proposal, not a live booking.
 
 ---
