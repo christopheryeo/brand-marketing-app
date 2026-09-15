@@ -84,4 +84,13 @@
 
 ## 6. Build sequence (revised for Apollo)
 
-Phase 1 foundations (packs, recipient picker + suppression, DB-agent wrapper, `create_person`) → Apollo integration (enroll a list into a sequence; consume events) → Actions 2–6 wired to Apollo events → hardening/reporting. **In-repo email send and inbound-mailbox monitoring are NOT built** (Apollo owns them). See `campaign/DESIGN.md` for the technical design.
+Phase 1 foundations → Apollo integration (create sequence from pack; enroll; consume events) → Actions 2–6 wired to Apollo events → hardening/reporting. **In-repo email send and inbound-mailbox monitoring are NOT built** (Apollo owns them). See `campaign/DESIGN.md` for the technical design.
+
+**Lane split (DEVELOPMENT.md Policy 2/10 — one Now line = one tool, one branch).** This work spans both tools, so it cannot ship as a single Now prompt:
+
+| Lane / tool | Owns | Touches | Tag |
+|---|---|---|---|
+| **Claude Code** (implement) | packs CRUD, recipient picker + suppression, `apollo.py`, `meet.py`, `agent.py` | `campaign/`, tracked scripts | implement |
+| **ChatGPT Codex** (wiki) | `create_person`, `db_agent.py`, Person-schema `emailBounced`/`departed` + backfill, the Person↔Campaign enrollment relationship writeback | `scripts/`, `schemas/`, entity records, `log.md` | wiki |
+
+Phase 1 is therefore **two Now prompts** (one per tool). The Codex lane writes the graph (participation, schema, DB Actions); the Claude Code lane never writes entity records or `log.md`.
