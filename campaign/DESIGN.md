@@ -8,7 +8,7 @@
 
 ## 1. Execution model (confirmed)
 
-- The agent is a **Python module in this repo** that calls the **Apollo API** directly (key in `.env.local`, same pattern as the existing enrichment path and how `ask_server.py` calls OpenAI). No Zapier.
+- The agent is a **Python module in this repo** that calls the **Apollo API** directly. **`apollo.py` is greenfield** — there is *no* existing in-repo Apollo client to reuse: `run_person_enrichment.py` shells out to external provider **adapter commands**, it does not call Apollo's HTTP API. The real direct-API precedent to mirror is **`ask_server.py`** (OpenAI via `urllib` + key from `.env.local`). Add a new **`APOLLO_API_KEY`** to `.env.local`. No Zapier.
 - **Outbound = Apollo.** We **create the Apollo sequence from the pack** (subject/body/attachment + a 1-week follow-up step) via the API, then enroll the recipient list into it; Apollo performs sends, tracking, and the follow-up (Action 1).
 - **Inbound = Apollo events.** We consume Apollo reply/bounce/status events (webhook receiver or API poll) and fire Actions 2–6.
 - Runs unattended (Apollo owns delivery timing); our side is event-driven + idempotent.
@@ -24,8 +24,8 @@ campaign/
   attachments/<id>/…      # pack attachments (GITIGNORED if customer content)
   lists/<id>.json         # recipient lists — personIds only (tracked)
   suppression.json        # opt-out / do-not-email list, by personId/email-hash (GITIGNORED)
-  campaigns/<id>.json     # a launched campaign: packId + listId + apolloSequenceId + status (GITIGNORED — holds addresses)
-  events/<campaignId>.jsonl # Apollo events + classification results (GITIGNORED — PII)
+  runs/<id>.json          # a launch's transient Apollo state: packId + listId + campaignId + apolloSequenceId + per-recipient contactId/state (GITIGNORED — holds addresses). Participation itself is a graph relationship, not this file.
+  events/<runId>.jsonl    # Apollo events + classification results (GITIGNORED — PII)
   apollo.py               # Apollo API client: enroll, fetch/receive events
   db_agent.py             # vault writeback wrapper (see §7)
   classify.py             # reply classification (see §6)
@@ -38,13 +38,19 @@ campaign/
 
 ## 3. Data model & PII rules
 
+**Graph-native participation (AGENTS rule 8).** A **marketing-campaign** is an existing entity (`schemas/marketing-campaign.schema.json`: `campaignId`, `name`, …) and enrollment is a **Person↔Campaign relationship** (`schemas/relationship.schema.json`: `fromId`/`toId`/`relationshipType`), **not** a duplicate store. So:
+
+- A launched campaign is a **marketing-campaign entity** (create via the vault, reuse `campaignId`).
+- Each enrolled recipient is a **relationship** `{fromId: personId, toId: campaignId, relationshipType: "enrolledInCampaign", sourceRefs}` — the canonical record of who was in what. Written on the **Codex/wiki lane** (§7), committed as tracked entity + `log.md`.
+- The loose `campaign/` JSON below holds **only transient Apollo runtime state** (contact/sequence ids, per-recipient send state) — never the system of record for participation.
+
 - **CampaignPack** `{id, subject, body, attachmentRef, createdAt, updatedAt, status}` — no recipient data → **tracked**.
 - **RecipientList** `{id, name, personIds[], createdAt}` — people **by personId reference only** → **tracked**.
-- **Campaign** `{id, packId, listId, apolloSequenceId, launchedBy, status, recipients:[{personId, email, apolloContactId, state}]}` — resolves addresses at enroll → **gitignored**.
-- **Event** (JSONL) `{campaignId, personId, class, evidence, at}` from Apollo → **gitignored** (PII).
+- **CampaignRun** (transient) `{id, packId, listId, campaignId, apolloSequenceId, launchedBy, status, recipients:[{personId, apolloContactId, state}]}` — Apollo runtime mapping; addresses resolved at enroll → **gitignored**. Participation itself lives in the graph (above), not here.
+- **Event** (JSONL) `{runId, personId, class, evidence, at}` from Apollo → **gitignored** (PII).
 - **Suppression** list of personIds / email hashes → **gitignored**; recipient selection **always excludes it**. **Populated manually only** — `db_agent` exposes an `add_suppression(personId, reason)` helper for an authorised person; Actions 4/5 do **not** write to it.
 
-**Gitignore additions:** `campaign/campaigns/`, `campaign/events/`, `campaign/attachments/`, `campaign/suppression.json`. Tracked files carry **no addresses or reply bodies**.
+**Gitignore additions:** `campaign/runs/`, `campaign/events/`, `campaign/attachments/`, `campaign/suppression.json`. Tracked files carry **no addresses or reply bodies**.
 
 ---
 
@@ -59,7 +65,7 @@ campaign/
 
 ## 5. Event → person correlation
 
-Apollo events reference an **Apollo contact id** and the recipient email. Correlate to our `personId` via the `apolloContactId` stored on the Campaign at enroll time (primary), or by **normalized email** (fallback, using `wiki_pipeline.normalize_email`).
+Apollo events reference an **Apollo contact id** and the recipient email. Correlate to our `personId` via the `apolloContactId` stored on the **CampaignRun** at enroll time (primary), or by **normalized email** (fallback, using `wiki_pipeline.normalize_email`).
 
 ---
 
@@ -80,7 +86,9 @@ Apollo events reference an **Apollo contact id** and the recipient email. Correl
 - `add_person(email, displayName, orgId?)` → Action 3 (see §8).
 - `add_suppression(personId, reason)` → append to `suppression.json` (manual only; not called by any Action).
 
-Constraint (Codex lane): writes touch **gitignored person notes**, append **tracked `log.md`**; commit only `log.md`/scripts, never person notes or PII.
+**Lane (DEVELOPMENT.md).** Everything in §7–§9 — `db_agent.py`, `create_person`, the schema change, and the **Person↔Campaign enrollment relationship** (§3) — is the **ChatGPT Codex / wiki** lane (writes entity records, `schemas/`, `log.md`). The `campaign/` picker, `apollo.py`, `meet.py`, `agent.py` are the **Claude Code / implement** lane. They ship as **separate Now prompts / PRs** (SPEC §6).
+
+Constraint (Codex lane): writes touch **gitignored person notes**, append **tracked `log.md`**; commit only `log.md`/scripts/schemas, never person notes or PII.
 
 ---
 
@@ -113,7 +121,7 @@ Update `schemas/person.schema.json` + schema generation, and backfill existing r
 
 ## 11. Secrets
 
-`.env.local` (gitignored via `.env.*`) holds: **Apollo API key**, the OpenAI model key (already present), and Google OAuth for Calendar/Meet. Provide `.env.example` with key names only. Nothing committed.
+`.env.local` (gitignored via `.env.*`) holds: **`APOLLO_API_KEY`** (new — no Apollo key exists in-repo today), the OpenAI model key (already present, read by `ask_server.py`), and Google OAuth for Calendar/Meet. Provide a new `.env.example` (does not exist yet) with key names only. Nothing committed.
 
 ---
 
