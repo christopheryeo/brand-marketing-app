@@ -1,95 +1,84 @@
-# Campaign-Send Agent — Specification (draft for confirmation)
+# Campaign-Send Agent — Specification
 
-**Status:** DRAFT — captured, not locked. Every behaviour below is Jorge's stated intent (captured 4 Sep 2026) and must be **confirmed or corrected by Jorge** (weekend review, via Comments / Suggested edits) before any Action is implemented. No Action code is written until its checklist line is confirmed.
+**Status:** Decisions taken by Christopher on 15 Sep 2026 (Round 1–4) are recorded below. Action *behaviour* is confirmed by Christopher **subject to Jorge's review** (Jimmy chasing). Technical design lives in `campaign/DESIGN.md`.
 
 **Sources:**
 - Requirements — "Influential Brands Knowledge Requirements" Google Doc, section *Campaign-send agent behaviour (Jorge)*.
 - Build plan — Google Doc `1s9Y36dA4NYHzdrHmQqfW4uTvYUXOsa1sXpzNR3ixm_Y` (Phases 0–5).
 
-**Scope of this doc:** capture the agent's behaviour, open questions, sending-authority options, and integration choices. It does **not** implement anything.
+## Architecture at a glance (confirmed)
+
+**Apollo.io is the sending platform.** Apollo runs the actual send, tracking, and the follow-up. **Our repo (the Knowledge Graph) owns**: recipient selection, campaign packs, and the response **Actions that update records** — driven by Apollo's reply/bounce/status events. So this is an **Apollo integration + Knowledge-Graph updater**, not an in-repo email sender.
 
 ---
 
 ## 1. What the agent does (high level)
 
 1. Select the people to email (recipients) from the Knowledge Graph.
-2. Select a **campaign pack** — email header, email body, and attachment — where packs are editable, addable (as many as needed), and deletable.
-3. Send the pack to the selected recipients.
-4. Watch each recipient's response and take one of six Actions.
+2. Select a **campaign pack** — email header, email body, attachment — where packs are editable, addable, and deletable.
+3. **Enroll** the selected recipients into an **Apollo sequence** (Apollo sends + tracks + does the 1-week follow-up).
+4. **Consume Apollo's response events** and take one of six Actions.
 
 ---
 
-## 2. The six Actions — confirmation checklist
+## 2. The six Actions — CONFIRMED (subject to Jorge review)
 
-Mark each line ✅ (confirmed) or ✍️ (corrected) — the correction goes in the Notes column.
-
-| # | Trigger | Agent behaviour | Confirm | Notes |
+| # | Trigger | Agent behaviour | Owner | Confirm |
 |---|---|---|---|---|
-| Action 1 | Recipient does **not** reply | Plan a follow-up email **one week** later | ☐ | |
-| Action 2 | Recipient replies, **interested** to find out more | **Arrange a Zoom call** | ☐ | |
-| Action 3 | Recipient replies and **adds colleagues** to the thread | Tell the **database agent** to add the new people to records | ☐ | |
-| Action 4 | Email **bounced** | Tell the **database agent** to update the record | ☐ | |
-| Action 5 | **Auto-reply** — person has **left the company** | Tell the **database agent** to update the record | ☐ | |
-| Action 6 | **Auto-reply** — person **on leave**, suggests an alternate contact | **Send the email to the alternate contact** named in the auto-reply | ☐ | |
+| Action 1 | Recipient does **not** reply | Follow-up email **one week** later | **Apollo** (sequence step) | ✅ |
+| Action 2 | Reply, **interested** | Arrange a call — **Google Meet** via Calendar | Repo | ✅ |
+| Action 3 | Reply **adds colleagues** | Add the new **real people** to records (skip role mailboxes) | Repo (DB) | ✅ |
+| Action 4 | Email **bounced** | Set `emailBounced: true` on the record | Repo (DB) | ✅ |
+| Action 5 | Auto-reply — **left the company** | Set `departed: true` on the record | Repo (DB) | ✅ |
+| Action 6 | Auto-reply — **on leave**, alternate contact given | **Auto-enroll the alternate contact** in Apollo | Repo → Apollo | ✅ |
 
-**Action 7 — DROPPED (9 Sep 2026, per Jorge):** it duplicated Action 3. Not to be built.
-
----
-
-## 3. Open questions (confirmation checklist)
-
-Resolve each before the relevant build item starts.
-
-- ☐ **Follow-up cadence (Action 1):** exactly one follow-up at 1 week, or a further sequence after that? Stop condition?
-- ☐ **"Interested" definition (Action 2):** what signals count as interested vs neutral vs negative? Who confirms borderline cases?
-- ☐ **Zoom arrangement (Action 2):** does the agent propose times, or auto-book? (Default assumption: propose/draft for human confirmation — see §4.)
-- ☐ **Colleague add (Action 3):** add every new address, or only non–role mailboxes? What org do they inherit?
-- ☐ **Bounce handling (Action 4):** hard bounce only, or soft bounces after N tries? What flag is written?
-- ☐ **Left-company (Action 5):** mark inactive vs departed vs delete? Keep for history?
-- ☐ **Alternate contact (Action 6):** send immediately, or create a draft for review first? Same pack, or a tweaker intro?
-- ☐ **Recipient eligibility:** may the same person be emailed by more than one campaign? Any suppression/opt-out list?
-- ☐ **Campaign pack ownership:** who may create/edit/delete packs?
-- ☐ **Timezone for the 1-week timer and sends:** SGT assumed unless corrected.
+**Action 7 — DROPPED (9 Sep 2026):** duplicated Action 3. Not built.
 
 ---
 
-## 4. Sending authority (decision pending — leave blank for Christopher / Jorge)
+## 3. Resolved questions (Christopher, 15 Sep 2026)
 
-Which identity sends, and who may trigger a send. (Planning refs A2–A3.)
+- **Follow-up cadence (Action 1):** exactly **one** follow-up at 1 week — configured as an Apollo sequence step.
+- **"Interested" (Action 2):** classified by LLM (see §5) at **confidence ≥ 0.90 + evidence**; borderline cases go to **human review**, not auto-action.
+- **Zoom/call (Action 2):** **Google Meet** via the native Calendar connector (not Zoom).
+- **Colleague add (Action 3):** add **real individuals only**; skip generic role mailboxes (info@/sales@/support@), matching the vault ingestion rule.
+- **Bounce / left-company (Actions 4/5):** two **separate booleans** — `emailBounced` and `departed` — with history kept in `entities/people/log.md`.
+- **Alternate contact (Action 6):** **auto-enroll** in the Apollo sequence (no manual step).
+- **Recipient eligibility:** a person **may be in multiple campaigns**, but recipient selection **always excludes a suppression / opt-out list**.
+- **Response signals:** read from **Apollo (API/webhook)**, not by monitoring a mailbox.
+- **Timezone:** SGT.
 
-| Option | What it means | Pros | Cons | Chosen? |
-|---|---|---|---|---|
-| **Named-user mailbox** | Sends come from a specific person's account (e.g. a salesperson) | Personal, higher reply rates; replies land in that person's inbox | Ties campaign to one person; access/rotation issues; per-user auth | ☐ |
-| **Shared mailbox** | Sends come from a team/shared address (e.g. campaigns@…) | Team-owned, survives staff change; central monitoring | Less personal; shared-mailbox send/monitor permissions needed | ☐ |
+---
 
-**Who may trigger a send** (fill in):
+## 4. Sending authority (CONFIRMED)
 
-| Role / person | May compose pack | May select recipients | May trigger the actual send |
+- **Sender identity:** **shared mailbox** (e.g. `campaigns@…`), connected to Apollo.
+- **Who may launch** (enroll a recipient list into an Apollo sequence): **named authorised users only.** Composing packs and selecting recipients may be broader.
+
+| Role / person | Compose pack | Select recipients | **Launch (enroll to Apollo)** |
 |---|---|---|---|
-| _(to fill)_ | ☐ | ☐ | ☐ |
+| _(fill the authorised names)_ | ☐ | ☐ | ☐ |
 
-**Standing guardrail (applies regardless of choice):** every outbound send **defaults to a draft for human review and is not auto-sent** unless an authorised person explicitly triggers it. This mirrors the organisation's email-review rule and is the safety gate for Actions 1, 2 (proposal), and 6.
+**Standing guardrail:** launching a campaign is a deliberate, authorised action (named users only). The one place our repo composes a *new* outbound — Action 2's Google Meet proposal — is prepared for human confirmation where the invitee is unverified.
 
 ---
 
-## 5. Integrations (choose the channel; note native vs approval-needed)
+## 5. Integrations (CONFIRMED)
 
-"Native" = a first-party MCP connector is available (preferred, per policy). "Needs approval" = only a Zapier-routed option is known, which requires Christopher's explicit approval before use.
-
-| Concern | Purpose | Candidate | Native? | Decision |
-|---|---|---|---|---|
-| **Outbound email** | Send the pack (drafts-first) | **Gmail** native connector | ✅ Native (supports drafts) | ☐ |
-| **Inbound monitor** | Read/classify replies, bounces, auto-replies | **Gmail** native connector (thread/search reads) | ✅ Native (a polling/watch loop still to design) | ☐ |
-| **Zoom** (Action 2) | Arrange the call | Zoom API | ⚠️ No native connector known → **needs approval** (Zapier), **or** substitute Google Calendar/Meet (native) | ☐ |
-| **Database-agent handoff** (Actions 3/4/5) | Add/update Knowledge Graph records | Internal — the vault write path (Codex side, `entities/people` + `log.md`) | ✅ Internal, no external connector | ☐ |
+| Concern | Choice | Native? |
+|---|---|---|
+| **Send / track / follow-up** | **Apollo.io** (sequences) | Apollo API — key in `.env.local` (same pattern as enrichment) |
+| **Response signals** (reply/bounce/auto-reply) | **Apollo API / webhook** → repo Actions | Apollo API |
+| **Call (Action 2)** | **Google Meet** via **native Calendar** connector | ✅ Native |
+| **Reply classification** | **LLM — OpenAI `gpt-4o-mini`** (existing app model path) | Native HTTP + `.env.local` key |
+| **Record updates** (Actions 3/4/5) | Internal vault writeback (`record_enrichment` / `set_to_enhance` pattern) | ✅ Internal |
 
 **Notes:**
-- Outbound + inbound both map cleanly onto the **native Gmail** connector; no Zapier needed for the core send/monitor loop.
-- **Zoom is the one likely approval item.** If a native Zoom path isn't available, the fallback is either (a) Christopher approves the Zapier Zoom action, or (b) the agent proposes a **Google Meet** event via the native Calendar connector instead. Decision needed before Action 2.
-- The **database agent** is a separate component (the vault-write side). This spec assumes it exists / will be built; the campaign agent only calls a defined interface (`add_person`, `update_person`) — see build-plan item 27.
+- No Zapier is required; Apollo, OpenAI, and Google are reached via their own APIs / native connectors.
+- Apollo API access needs an Apollo key in `.env.local` (gitignored) — to confirm the exact scope/plan supports sequence enrollment + event webhooks.
 
 ---
 
-## 6. Build sequence (reference)
+## 6. Build sequence (revised for Apollo)
 
-Implementation follows the build plan's phases: Phase 0 (this spec + decisions) → Phase 1 foundations (packs, recipients, db-agent interface) → Phase 2 sending (drafts-first) → Phase 3 response monitoring → Phase 4 the six Actions → Phase 5 hardening/reporting. No Action is started until §2 and its §3 questions are confirmed.
+Phase 1 foundations (packs, recipient picker + suppression, DB-agent wrapper, `create_person`) → Apollo integration (enroll a list into a sequence; consume events) → Actions 2–6 wired to Apollo events → hardening/reporting. **In-repo email send and inbound-mailbox monitoring are NOT built** (Apollo owns them). See `campaign/DESIGN.md` for the technical design.
